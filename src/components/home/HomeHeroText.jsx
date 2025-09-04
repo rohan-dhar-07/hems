@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import Video from './Video'
+import Navbar from './Navbar';
 
 const HomeHeroText = () => {
   const [cartItems, setCartItems] = useState(3); // Example cart items count
@@ -71,13 +72,7 @@ const HomeHeroText = () => {
       </div>
 
       {/* Navigation */}
-      <nav className="absolute top-4 left-4 z-50">
-        <button className="bg-amber-50 p-3 rounded-full shadow-lg hover:bg-amber-100 transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-amber-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
-      </nav>
+      <Navbar />
 
       {/* Hero Text - Centered with adjusted font */}
       <div className="text-center">
