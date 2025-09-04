@@ -10,53 +10,83 @@ import Cart from './Cart';
 const HomeHeroText = () => {
   const container = useRef(null);
   
-  // GSAP Animation Hook for the entrance animation
+  // GSAP animation for a dramatic entrance
   useGSAP(() => {
     const tl = gsap.timeline();
-    tl.from(".anim-hero-text", { y: 100, opacity: 0, duration: 1, stagger: 0.2, ease: "power4.out" })
-      .from(".anim-order-button", { scale: 0.5, opacity: 0, duration: 0.7, ease: "back.out(1.7)" }, "-=0.5")
-      .from(".anim-bottom-links > div", { y: 50, opacity: 0, duration: 0.8, stagger: 0.15, ease: "power3.out" }, "-=0.4");
+
+    // 1. Animate each letter of "HEMS" with a staggered roll-in effect
+    tl.from(".anim-letter", {
+      yPercent: 100,
+      opacity: 0,
+      rotationZ: 25,
+      duration: 1,
+      ease: "power3.out",
+      stagger: 0.1
+    })
+    // 2. Fade in the tagline after the main title
+    .from(".anim-tagline", {
+      y: 30,
+      opacity: 0,
+      duration: 0.8,
+      ease: "power2.out"
+    }, "-=0.7")
+    // 3. Animate the order button with a satisfying pop
+    .from(".anim-order-button", {
+      scale: 0.5,
+      opacity: 0,
+      duration: 0.7,
+      ease: "back.out(1.7)"
+    }, "-=0.5")
+    // 4. Stagger in the bottom text
+    .from(".anim-bottom-text", {
+      y: 50,
+      opacity: 0,
+      duration: 0.8,
+      ease: "power3.out"
+    }, "-=0.4");
+
   }, { scope: container });
 
   return (
-    <div ref={container} className='font-["font1"] relative flex-grow flex flex-col justify-center items-center'>
+    // The main container is transparent, allowing the background video to show through
+    <div ref={container} className='font-["font1"] relative flex-grow flex flex-col justify-center items-center text-amber-50' style={{ textShadow: '2px 2px 8px rgba(0, 0, 0, 0.5)' }}>
       
       <Navbar />
       <Cart />
 
       {/* Hero Text */}
       <div className="text-center">
-        <div className='flex items-baseline text-[9.5vw] uppercase leading-[10vw] font-bold'>Humble Eats </div> 
-        <div className='flex items-baseline text-[9.5vw] uppercase leading-[8vw] font-bold justify-center'>
-           Majesti
-          <div className='h-[7vw] w-[10vw] rounded-3xl overflow-hidden mx-2'>
-            <Video />
-          </div>
-        </div>
-        <div className='text-[9.5vw] uppercase leading-[8vw] font-bold'>Servings</div>
+        {/* Main Title: HEMS */}
+        <h1 className="text-[18vw] md:text-[15vw] font-bold tracking-tighter uppercase leading-none overflow-hidden py-2">
+          {/* Each letter is wrapped in a span for individual animation */}
+          <span className="inline-block anim-letter">H</span>
+          <span className="inline-block anim-letter">E</span>
+          <span className="inline-block anim-letter">M</span>
+          <span className="inline-block anim-letter">S</span>
+        </h1>
+        {/* Tagline */}
+        <p className="anim-tagline text-2xl md:text-3xl font-['font2'] -mt-4 md:-mt-6 tracking-wide">
+          Humble Eats, Majestic Servings
+        </p>
       </div>
       
       {/* Call to Action Button */}
-      <div className="anim-order-button mt-8 flex justify-center">
+      <div className="anim-order-button mt-12 flex justify-center">
         <Link to="/order">
-          <button className="bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-full shadow-lg">
-            Order Now
+          <button className="bg-rose-500 hover:bg-rose-600 text-white font-bold py-4 px-10 rounded-full shadow-lg transition-transform transform hover:scale-105">
+            Shop Now
           </button>
         </Link>
       </div>
 
-      {/* Bottom Links */}
-      <div className='anim-bottom-links mt-20 font-["font2"] flex item-center justify-center gap-20'>
-        <div className='text-[5vw] leading-[4vw] text-amber-800 hover:text-rose-400 transition-colors px-5 pt-2 pb-0 uppercase'>
-          <Link to='/agence'>Cookies</Link>
-        </div>
-        <div className='text-[5vw] leading-[4vw] text-amber-800 hover:text-rose-400 transition-colors px-5 pt-2 pb-0 uppercase'> 
-          <Link to='/projects'>Cakes</Link>
-        </div>
+      {/* About Company Section */}
+      <div className='anim-bottom-text mt-16 font-["font2"] text-center'>
+        <p className="text-lg md:text-xl tracking-wider px-4">
+          Baked daily with the finest ingredients and a touch of love.
+        </p>
       </div>
     </div>
   );
 };
 
 export default HomeHeroText;
-
