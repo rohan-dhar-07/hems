@@ -3,11 +3,7 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 
 // Mock data for cart items
-const initialCartItems = [
-  { id: 1, name: 'Red Velvet Slice', price: 8.50, quantity: 1, image: 'https://www.allrecipes.com/thmb/gDJ1S6ETLfWGyyWw_4A_IGhvDYE=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/9295_red-velvet-cake_ddmfs_4x3_1129-a8ab17b825e3464a9a53ceeda54ff461.jpg' },
-  { id: 2, name: 'Chocolate Chip Cookie', price: 3.00, quantity: 2, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpefGoa32Kxae14xhVsCtuR5rDWs3pAhrA7Q&s' },
-  { id: 3, name: 'Caramel Macaron', price: 2.75, quantity: 3, image: 'https://baranbakery.com/wp-content/uploads/2022/01/caramel-macarons-7-683x1024.jpg' },
-];
+
 
 // A single cart item component for clean code and animation
 const CartItem = ({ item }) => (
@@ -22,9 +18,9 @@ const CartItem = ({ item }) => (
 );
 
 
-const Cart = () => {
+const Cart = ({ cartItems = [] }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [cartItems, setCartItems] = useState(initialCartItems);
+
   const container = useRef(null);
   const timeline = useRef(null);
 
