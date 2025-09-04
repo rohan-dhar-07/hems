@@ -46,6 +46,7 @@ const HomeBottomText = () => {
   }, { scope: container });
 
   return (
+    
     <div className='py-50'>
     <div ref={container} className="relative w-full text-amber-50" style={{ textShadow: '2px 2px 8px rgba(0, 0, 0, 0.6)' }}>
       <div className="container mx-auto px-4 py-16 md:py-24">
@@ -97,7 +98,7 @@ const HomeBottomText = () => {
         </div>
       </div>
     </div>
-    </div>
+   </div>   
   );
 };
 
