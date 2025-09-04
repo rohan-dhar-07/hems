@@ -1,69 +1,47 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, forwardRef } from 'react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 
-// Mock data for cart items
-
-
-// A single cart item component for clean code and animation
-const CartItem = ({ item }) => (
+// A single cart item component with quantity controls
+const CartItem = ({ item, onIncrease, onDecrease }) => (
   <li className="cart-item flex items-center space-x-4 py-4 border-b border-amber-200">
     <img src={item.image} alt={item.name} className="w-16 h-16 rounded-md object-cover" />
     <div className="flex-grow">
       <h4 className="font-bold text-amber-900">{item.name}</h4>
-      <p className="text-sm text-amber-700">Quantity: {item.quantity}</p>
+      {/* Quantity Controls */}
+      <div className="flex items-center space-x-2 mt-1">
+        <button 
+          onClick={onDecrease} 
+          className="w-6 h-6 rounded-full bg-amber-200 text-amber-800 font-bold hover:bg-amber-300 transition-colors"
+        >
+          -
+        </button>
+        <span className="text-sm text-amber-800 w-5 text-center">{item.quantity}</span>
+        <button 
+          onClick={onIncrease} 
+          className="w-6 h-6 rounded-full bg-amber-200 text-amber-800 font-bold hover:bg-amber-300 transition-colors"
+        >
+          +
+        </button>
+      </div>
     </div>
     <p className="font-semibold text-amber-900">₹{(item.price * item.quantity).toFixed(2)}</p>
   </li>
 );
 
-
-const Cart = ({ cartItems = [] }) => {
+// The main Cart component, wrapped in forwardRef to accept a ref
+const Cart = forwardRef(({ cartItems = [], onIncrease, onDecrease }, ref) => {
   const [isOpen, setIsOpen] = useState(false);
-
   const container = useRef(null);
   const timeline = useRef(null);
 
   useGSAP(() => {
     timeline.current = gsap.timeline({ paused: true });
-
     timeline.current
-      // 1. Fade in the background overlay
-      .to(".cart-overlay", {
-        opacity: 1,
-        pointerEvents: 'auto',
-        duration: 0.5,
-        ease: 'power3.inOut'
-      })
-      // 2. Slide in the cart panel from the right
-      .to(".cart-panel", {
-        x: "0%",
-        duration: 0.6,
-        ease: "power3.inOut",
-      }, "<") // Start at the same time as the overlay
-      // 3. Animate the cart items sliding in with a stagger effect
-      .fromTo(".cart-item", {
-        x: "50%",
-        opacity: 0,
-      },{
-        x: "0%",
-        opacity: 1,
-        stagger: 0.1,
-        duration: 0.4,
-        ease: 'power2.out'
-      }, "-=0.3")
-      // 4. Fade in the footer details
-      .fromTo(".cart-footer > *", {
-        y: 20,
-        opacity: 0
-      }, {
-        y: 0,
-        opacity: 1,
-        stagger: 0.1,
-        duration: 0.5,
-        ease: 'power2.out'
-      }, "-=0.3");
-
+      .to(".cart-overlay", { opacity: 1, pointerEvents: 'auto', duration: 0.5, ease: 'power3.inOut' })
+      .to(".cart-panel", { x: "0%", duration: 0.6, ease: "power3.inOut" }, "<")
+      .fromTo(".cart-item", { x: "50%", opacity: 0 }, { x: "0%", opacity: 1, stagger: 0.1, duration: 0.4, ease: 'power2.out' }, "-=0.3")
+      .fromTo(".cart-footer > *", { y: 20, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.1, duration: 0.5, ease: 'power2.out' }, "-=0.3");
   }, { scope: container });
 
   useEffect(() => {
@@ -74,10 +52,7 @@ const Cart = ({ cartItems = [] }) => {
     }
   }, [isOpen]);
 
-  const toggleCart = () => {
-    setIsOpen(!isOpen);
-  };
-  
+  const toggleCart = () => setIsOpen(!isOpen);
   const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   return (
@@ -95,28 +70,35 @@ const Cart = ({ cartItems = [] }) => {
         </div>
         
         <ul className="flex-grow p-6 overflow-y-auto">
-            {cartItems.length > 0 ? (
-                cartItems.map(item => <CartItem key={item.id} item={item} />)
-            ) : (
-                <p className="text-center text-amber-700 mt-8">Your cart is empty!</p>
-            )}
+          {cartItems.length > 0 ? (
+            cartItems.map(item => 
+              <CartItem 
+                key={item.id} 
+                item={item} 
+                onIncrease={() => onIncrease(item.id)} 
+                onDecrease={() => onDecrease(item.id)} 
+              />
+            )
+          ) : (
+            <p className="text-center text-amber-700 mt-8">Your cart is empty!</p>
+          )}
         </ul>
 
         {cartItems.length > 0 && (
-            <div className="cart-footer p-6 border-t border-amber-200 bg-amber-100 space-y-4">
-                <div className="flex justify-between text-lg font-bold text-amber-900">
-                    <span>Subtotal</span>
-                    <span>₹{subtotal.toFixed(2)}</span>
-                </div>
-                <button className="w-full bg-rose-500 text-white font-bold py-3 rounded-lg shadow-md hover:bg-rose-600 transition-colors">
-                    Proceed to Checkout
-                </button>
+          <div className="cart-footer p-6 border-t border-amber-200 bg-amber-100 space-y-4">
+            <div className="flex justify-between text-lg font-bold text-amber-900">
+              <span>Subtotal</span>
+              <span>₹{subtotal.toFixed(2)}</span>
             </div>
+            <button className="w-full bg-rose-500 text-white font-bold py-3 rounded-lg shadow-md hover:bg-rose-600 transition-colors">
+              Proceed to Checkout
+            </button>
+          </div>
         )}
       </div>
 
       {/* Cart Icon Button (The Trigger) */}
-      <div className="absolute top-4 right-4 z-30">
+      <div ref={ref} className="absolute top-4 right-4 z-30">
         <div className="relative">
           <button onClick={toggleCart} className="bg-amber-50 p-3 rounded-full shadow-lg hover:bg-amber-100 transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-amber-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -124,7 +106,7 @@ const Cart = ({ cartItems = [] }) => {
             </svg>
             {cartItems.length > 0 && (
               <span className="absolute -top-2 -right-2 bg-rose-500 text-white text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center">
-                {cartItems.length}
+                {cartItems.reduce((acc, item) => acc + item.quantity, 0)}
               </span>
             )}
           </button>
@@ -132,6 +114,6 @@ const Cart = ({ cartItems = [] }) => {
       </div>
     </div>
   );
-};
+});
 
 export default Cart;
