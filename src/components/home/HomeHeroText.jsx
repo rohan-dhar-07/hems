@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import Video from './Video'
-import Navbar from './Navbar';
+import Navbar from './Navbar'
+import Cart from './Cart';
 
 const HomeHeroText = () => {
   const [cartItems, setCartItems] = useState(3); // Example cart items count
@@ -56,20 +57,8 @@ const HomeHeroText = () => {
     // Added the ref to the main container div
     <div ref={container} className='font-[font1] relative min-h-screen flex flex-col justify-center items-center'>
       {/* Cart Icon */}
-      <div className="absolute top-4 right-4 z-50">
-        <div className="relative">
-          <button className="bg-amber-50 p-3 rounded-full shadow-lg hover:bg-amber-100 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-amber-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-            </svg>
-            {cartItems > 0 && (
-              <span className="absolute -top-2 -right-2 bg-rose-500 text-white text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center">
-                {cartItems}
-              </span>
-            )}
-          </button>
-        </div>
-      </div>
+      <Cart />
+      
 
       {/* Navigation */}
       <Navbar />
