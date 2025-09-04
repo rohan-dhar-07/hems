@@ -52,7 +52,7 @@ const HomeHeroText = () => {
     <div ref={container} className='font-["font1"] relative flex-grow flex flex-col justify-center items-center text-amber-50' style={{ textShadow: '2px 2px 8px rgba(0, 0, 0, 0.5)' }}>
       
       <Navbar />
-      <Cart />
+      
 
       {/* Hero Text */}
       <div className="text-center">
