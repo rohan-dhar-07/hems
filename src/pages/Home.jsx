@@ -11,7 +11,8 @@ const Home = () => {
     </div>
     <div className='h-screen w-screen pb-5 overflow-hidden relative flex flex-col justify-between'>
       <HomeHeroText />
-      <HomeBottomText /> 
+      <HomeBottomText />
+       
 
     </div>
     </div>
