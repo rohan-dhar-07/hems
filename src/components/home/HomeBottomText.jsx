@@ -46,29 +46,13 @@ const HomeBottomText = () => {
   }, { scope: container });
 
   return (
+    <div className='py-50'>
     <div ref={container} className="relative w-full text-amber-50" style={{ textShadow: '2px 2px 8px rgba(0, 0, 0, 0.6)' }}>
       <div className="container mx-auto px-4 py-16 md:py-24">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
-
-          {/* Left Side: Text Content */}
-          <div className="text-center md:text-left">
-            <h2 className="text-4xl md:text-5xl font-['font1'] font-bold leading-tight anim-reveal">
-              Fresh Bakes &<br />Cool Sips
-            </h2>
-            <p className="mt-4 text-lg md:text-xl font-['font2'] anim-reveal">
-              Every majestic serving deserves the perfect pairing. Enjoy the classic, refreshing taste of Coca-Cola with our delicious, humble eats. It's the perfect recipe for a happy moment.
-            </p>
-            <div className="mt-8 anim-reveal">
-              <Link to="/order">
-                <button className="bg-rose-500 hover:bg-rose-600 text-white font-bold py-4 px-10 rounded-full shadow-lg transition-transform transform hover:scale-105">
-                  Explore Flavors
-                </button>
-              </Link>
-            </div>
-          </div>
-
+           
           {/* Right Side: Video Grid */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-14">
             <div className="overflow-hidden rounded-2xl shadow-lg anim-reveal">
               {/* Vibrant Coca-Cola Video */}
               <Video 
@@ -91,8 +75,28 @@ const HomeBottomText = () => {
             </div>
           </div>
 
+          {/* Left Side: Text Content */}
+          <div className="text-center md:text-left">
+            <h2 className="text-4xl md:text-5xl font-['font1'] font-bold leading-tight anim-reveal">
+              Fresh Bakes &<br />Cool Sips
+            </h2>
+            <p className="mt-4 text-lg md:text-xl font-['font2'] anim-reveal">
+              Every majestic serving deserves the perfect pairing. Enjoy the classic, refreshing taste of Coca-Cola with our delicious, humble eats. It's the perfect recipe for a happy moment.
+            </p>
+            <div className="mt-8 anim-reveal">
+              <Link to="/order">
+                <button className="bg-rose-500 hover:bg-rose-600 text-white font-bold py-4 px-10 rounded-full shadow-lg transition-transform transform hover:scale-105">
+                  Explore Flavors
+                </button>
+              </Link>
+            </div>
+          </div>
+
+          
+
         </div>
       </div>
+    </div>
     </div>
   );
 };
