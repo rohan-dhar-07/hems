@@ -57,7 +57,7 @@ const HomeHeroText = () => {
       {/* Hero Text */}
       <div className="text-center">
         {/* Main Title: HEMS */}
-        <h1 className="text-[18vw] md:text-[15vw] font-bold tracking-tighter uppercase leading-none overflow-hidden py-2">
+        <h1 className="text-[18vw] md:text-[15vw] font-bold tracking-tighter uppercase leading-none overflow-hidden py-20">
           {/* Each letter is wrapped in a span for individual animation */}
           <span className="inline-block anim-letter">H</span>
           <span className="inline-block anim-letter">E</span>
@@ -65,7 +65,7 @@ const HomeHeroText = () => {
           <span className="inline-block anim-letter">S</span>
         </h1>
         {/* Tagline */}
-        <p className="anim-tagline text-2xl md:text-3xl font-['font2'] -mt-4 md:-mt-6 tracking-wide">
+        <p className="anim-tagline text-2xl md:text-3xl font-['font2'] -mt-6 md:-mt-6 tracking-wide">
           Humble Eats, Majestic Servings
         </p>
       </div>
