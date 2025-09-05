@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Cart from '../components/home/Cart';
 import Navbar from '../components/home/Navbar';
+import { Link } from 'react-router-dom';
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
@@ -140,10 +141,18 @@ const BakeryOrderPage = () => {
         <div className="container mx-auto px-4">
           <h2 className="text-4xl font-bold text-center text-amber-900 mb-12">Browse Our Selection</h2>
           <div className="flex flex-wrap justify-center gap-6">
+          <Link to="/cake">
             <button className="category-btn bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-full shadow-lg">Cakes</button>
+            </Link>
+            <Link to="/pastries">
             <button className="category-btn bg-pink-500 hover:bg-pink-600 text-white font-bold py-4 px-8 rounded-full shadow-lg">Pastries</button>
+            </Link>
+            <Link to="/breads">
             <button className="category-btn bg-amber-700 hover:bg-amber-800 text-white font-bold py-4 px-8 rounded-full shadow-lg">Breads</button>
+            </Link>
+            <Link to="/icecream">
             <button className="category-btn bg-pink-700 hover:bg-pink-800 text-white font-bold py-4 px-8 rounded-full shadow-lg">Icecream</button>
+            </Link>
           </div>
         </div>
       </div>

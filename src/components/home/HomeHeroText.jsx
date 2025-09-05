@@ -2,10 +2,8 @@ import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
-
-import Video from './Video';
 import Navbar from './Navbar';
-import Cart from './Cart';
+
 
 const HomeHeroText = () => {
   const container = useRef(null);

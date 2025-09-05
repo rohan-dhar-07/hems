@@ -70,20 +70,24 @@ const Navbar = () => {
       {/* Navigation Menu Panel */}
       <div className="menu-panel fixed top-0 left-0 h-full w-full bg-amber-100/95 backdrop-blur-sm -translate-x-full z-40 flex items-center justify-center">
         <ul className="text-center space-y-4">
-          <Link to="/order">
-          <MenuLink>Our Bakes</MenuLink>
+          {/* Added the Home link here */}
+          <Link to="/" onClick={toggleMenu}>
+            <MenuLink>Home</MenuLink>
           </Link>
-          <Link to="/custom">
-          <MenuLink>Custom Orders</MenuLink>
+          <Link to="/order" onClick={toggleMenu}>
+            <MenuLink>Our Bakes</MenuLink>
           </Link>
-          <Link to="/gift">
-          <MenuLink>Gifting & Events</MenuLink>
+          <Link to="/custom" onClick={toggleMenu}>
+            <MenuLink>Custom Orders</MenuLink>
           </Link>
-          <Link to="/about">
-          <MenuLink>About Us</MenuLink>
+          <Link to="/gift" onClick={toggleMenu}>
+            <MenuLink>Gifting & Events</MenuLink>
           </Link>
-          <Link to="/contact">
-          <MenuLink>Contact</MenuLink>
+          <Link to="/about" onClick={toggleMenu}>
+            <MenuLink>About Us</MenuLink>
+          </Link>
+          <Link to="/contact" onClick={toggleMenu}>
+            <MenuLink>Contact</MenuLink>
           </Link>
         </ul>
       </div>

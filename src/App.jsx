@@ -12,6 +12,10 @@ import AboutPage from './pages/AboutPage';
 import GiftingPage from './pages/GiftingPage';
 import CustomOrderPage from './pages/CustomOrderPage';
 import Stairs from './components/agence/Stairs';
+import CakesPage from './pages/CakePage';
+import PastriesPage from './pages/PastriesPage';
+import BreadsPage from './pages/BreadsPage';
+import IceCreamPage from './pages/IceCreamPage';
 
 const App = () => {
   return (
@@ -27,6 +31,10 @@ const App = () => {
         <Route path='/about' element={<AboutPage />} />
         <Route path='/gift' element={<GiftingPage />} />
         <Route path='/custom' element={<CustomOrderPage />} />
+        <Route path='/cake' element={<CakesPage/>} />
+        <Route path='/pastries' element={<PastriesPage/>} />
+        <Route path='/breads' element={<BreadsPage/>} />
+        <Route path='/icecream' element={<IceCreamPage/>} />
       </Routes>
       </Stairs>
     </div>
