@@ -11,11 +11,13 @@ import ContactPage from './pages/ContactPage';
 import AboutPage from './pages/AboutPage';
 import GiftingPage from './pages/GiftingPage';
 import CustomOrderPage from './pages/CustomOrderPage';
+import Stairs from './components/agence/Stairs';
 
 const App = () => {
   return (
     // The <BrowserRouter> has been removed from this file
     <div className='text-white'>
+      <Stairs>
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/agence' element={<Agence />} />
@@ -26,6 +28,7 @@ const App = () => {
         <Route path='/gift' element={<GiftingPage />} />
         <Route path='/custom' element={<CustomOrderPage />} />
       </Routes>
+      </Stairs>
     </div>
   );
 };
