@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
+import { Link } from 'react-router-dom';
 
 // A single link item component for clean animation
 const MenuLink = ({ children }) => (
@@ -69,11 +70,21 @@ const Navbar = () => {
       {/* Navigation Menu Panel */}
       <div className="menu-panel fixed top-0 left-0 h-full w-full bg-amber-100/95 backdrop-blur-sm -translate-x-full z-40 flex items-center justify-center">
         <ul className="text-center space-y-4">
+          <Link to="/order">
           <MenuLink>Our Bakes</MenuLink>
+          </Link>
+          <Link to="/custom">
           <MenuLink>Custom Orders</MenuLink>
+          </Link>
+          <Link to="/gift">
           <MenuLink>Gifting & Events</MenuLink>
+          </Link>
+          <Link to="/about">
           <MenuLink>About Us</MenuLink>
+          </Link>
+          <Link to="/contact">
           <MenuLink>Contact</MenuLink>
+          </Link>
         </ul>
       </div>
 
