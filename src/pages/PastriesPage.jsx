@@ -16,10 +16,10 @@ const PastriesPage = () => {
   const cartRef = useRef(null);
 
   const pastryProducts = [
-    { id: 7, name: "Classic Croissant", price: 199.00, description: "Experience the art of lamination with 81 delicate, buttery layers.", image: "https://images.unsplash.com/photo-1555507036-ab794f24d8c7?q=80&w=2070" },
-    { id: 8, name: "Pain au Chocolat", price: 249.00, description: "Our classic croissant embracing two batons of rich, dark chocolate.", image: "https://images.unsplash.com/photo-1621939512532-6a87752d5a02?q=80&w=1964" },
-    { id: 9, name: "Almond Croissant", price: 299.00, description: "Filled with a sweet almond frangipane and topped with toasted almonds.", image: "https://images.unsplash.com/photo-1591949111400-1533b6a68257?q=80&w=1974" },
-    { id: 10, name: "Cinnamon Roll", price: 279.00, description: "A soft, gooey roll with a swirl of cinnamon and a decadent cream cheese glaze.", image: "https://images.unsplash.com/photo-1552318997-740809313fe9?q=80&w=1974" },
+    { id: 7, name: "Classic Croissant", price: 199.00, description: "Experience the art of lamination with 81 delicate, buttery layers.", image: "https://www.midwestliving.com/thmb/6pcQdksgUlwW2rA_S7qrzeopQT8=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/CD_R315020_Buttery-Croissant_8998_preview-b9cb4afd77df47978601ec2438b95ce6.jpg" },
+    { id: 8, name: "Pain au Chocolat", price: 249.00, description: "Our classic croissant embracing two batons of rich, dark chocolate.", image: "https://www.giallozafferano.com/images/295-29543/pain-au-chocolat_650x433_wm.jpg" },
+    { id: 9, name: "Almond Croissant", price: 299.00, description: "Filled with a sweet almond frangipane and topped with toasted almonds.", image: "https://www.simplyrecipes.com/thmb/UijSGX9q71RpSUkS3yfOloFL27I=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Simply-Recipes-Almond-Croissant-LEAD-8-07f51557bda7499aa6d1ccb4d079ea52.jpg" },
+    { id: 10, name: "Cinnamon Roll", price: 279.00, description: "A soft, gooey roll with a swirl of cinnamon and a decadent cream cheese glaze.", image: "https://horizon.com/wp-content/uploads/recipe-cin-roll-hero.jpg" },
   ];
 
   const handleAddToCart = (product, e) => {

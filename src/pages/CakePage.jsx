@@ -17,11 +17,11 @@ const CakesPage = () => {
   const preloaderRef = useRef(null); // 1. Add a ref for the preloader
 
   const cakeProducts = [
-    { id: 1, name: "Velvet Dream Cake", price: 1599.00, description: "A classic red velvet with a rich cream cheese frosting.", image: "https://images.unsplash.com/photo-1606313564200-e85b94de43ee?q=80&w=1974&auto=format&fit=crop", bgColor: "#4a0e0e" },
+    { id: 1, name: "Velvet Dream Cake", price: 1599.00, description: "A classic red velvet with a rich cream cheese frosting.", image: "https://cdn.igp.com/f_auto,q_auto,t_pnopt19prodlp/products/p-red-velvet-dream-cake-1-kg--201757-m.jpg", bgColor: "#4a0e0e" },
     { id: 2, name: "Chocolate Decadence", price: 1799.00, description: "Layers of dark chocolate sponge and silky truffle ganache.", image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80&w=1974&auto=format&fit=crop", bgColor: "#2d1b0b" },
-    { id: 3, name: "Lemon & Elderflower", price: 1699.00, description: "A light sponge infused with floral notes and zesty lemon curd.", image: "https://images.unsplash.com/photo-1627485790892-71001b6c16f2?q=80&w=1974&auto=format&fit=crop", bgColor: "#f0e68c" },
-    { id: 4, name: "Salted Caramel Crunch", price: 1899.00, description: "Caramel sponge with crunchy praline and buttercream.", image: "https://images.unsplash.com/photo-1607478913361-b6a15550a234?q=80&w=1974&auto=format&fit=crop", bgColor: "#8c5a2b" },
-    { id: 5, name: "Berry Chantilly", price: 1799.00, description: "Vanilla bean cake layered with light cream and fresh berries.", image: "https://images.unsplash.com/photo-1562440102-861f1682e335?q=80&w=1964&auto=format&fit=crop", bgColor: "#a35d6a" },
+    { id: 3, name: "Lemon & Elderflower", price: 1699.00, description: "A light sponge infused with floral notes and zesty lemon curd.", image: "https://ichef.bbci.co.uk/food/ic/food_16x9_1600/recipes/lemon_and_elderflower_15737_16x9.jpg", bgColor: "#f0e68c" },
+    { id: 4, name: "Salted Caramel Crunch", price: 1899.00, description: "Caramel sponge with crunchy praline and buttercream.", image: "https://www.mashed.com/img/gallery/easy-salted-caramel-vanilla-crunch-cake-recipe/l-intro-1623682796.jpg", bgColor: "#8c5a2b" },
+    { id: 5, name: "Berry Chantilly", price: 1799.00, description: "Vanilla bean cake layered with light cream and fresh berries.", image: "https://www.foodnetwork.com/content/dam/images/food/fullset/2024/03/20/COPYCAT_BERRY_CHANTILLY_CAKE_H_f.jpg", bgColor: "#a35d6a" },
   ];
   
   const handleAddToCart = (product, e) => {

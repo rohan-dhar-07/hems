@@ -17,10 +17,10 @@ const BreadsPage = () => {
 
   const breadProducts = [
     { id: 13, name: "Artisan Sourdough", price: 349.00, description: "Our signature loaf, naturally leavened over 48 hours for a complex flavor and a perfectly crisp crust.", image: "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?q=80&w=2070" },
-    { id: 14, name: "Classic Baguette", price: 299.00, description: "A taste of Paris. Light, airy, and perfect for any occasion, from sandwiches to sharing with cheese.", image: "https://images.unsplash.com/photo-1598373182133-5b65b5334369?q=80&w=1964" },
+    { id: 14, name: "Classic Baguette", price: 299.00, description: "A taste of Paris. Light, airy, and perfect for any occasion, from sandwiches to sharing with cheese.", image: "https://static01.nyt.com/images/2023/07/21/multimedia/21baguettesrex-hbkc/21baguettesrex-hbkc-jumbo.jpg" },
     { id: 15, name: "Whole Wheat Country Loaf", price: 399.00, description: "A hearty and wholesome loaf made with stone-ground whole wheat for a rich, nutty flavor.", image: "https://images.unsplash.com/photo-1534620808146-d33bb39128b2?q=80&w=1974" },
-    { id: 16, name: "Rosemary & Sea Salt Focaccia", price: 449.00, description: "Soft, chewy, and dimpled with fragrant rosemary and flaky sea salt. Perfect for dipping.", image: "https://images.unsplash.com/photo-1621324142142-2339c59505f9?q=80&w=1974" },
-    { id: 17, name: "Rich Brioche Loaf", price: 499.00, description: "An enriched, tender loaf with a soft crumb and golden crust. Perfect for French toast or enjoying on its own.", image: "https://images.unsplash.com/photo-1589112836284-8d820932c0f4?q=80&w=1974" },
+    { id: 16, name: "Rosemary & Sea Salt Focaccia", price: 449.00, description: "Soft, chewy, and dimpled with fragrant rosemary and flaky sea salt. Perfect for dipping.", image: "https://images.squarespace-cdn.com/content/v1/50106d5684aed4702b7242ed/1586789687009-M65BGJJXYE6DZ3P879M5/shutterstock_53135353.jpg" },
+    { id: 17, name: "Rich Brioche Loaf", price: 499.00, description: "An enriched, tender loaf with a soft crumb and golden crust. Perfect for French toast or enjoying on its own.", image: "https://mayaskitchendaydreams.com/wp-content/uploads/2022/03/Brioche_6.jpg" },
     { id: 18, name: "Multigrain Seeded Bread", price: 429.00, description: "A nutritious blend of whole grains and seeds, offering a complex texture and deep, earthy flavor.", image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=1974" }
   ];
 

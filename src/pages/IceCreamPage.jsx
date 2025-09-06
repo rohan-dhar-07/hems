@@ -16,10 +16,10 @@ const IceCreamPage = () => {
   const cartRef = useRef(null);
 
   const iceCreamProducts = [
-    { id: 19, name: "Himalayan Salted Caramel", price: 299.00, description: "Sweet cream base with ribbons of house-made salted caramel.", image: "https://images.unsplash.com/photo-1580982547524-6316886567b5?q=80&w=1974", color: "#fde68a" },
-    { id: 20, name: "Kolkata Meetha Paan", price: 349.00, description: "An adventurous flavor capturing the essence of the classic Indian treat.", image: "https://images.unsplash.com/photo-1567197785232-a74c4a705b93?q=80&w=1974", color: "#a7f3d0" },
-    { id: 21, name: "Darjeeling Tea Infusion", price: 329.00, description: "Aromatic Darjeeling tea infused into a delicate, creamy base.", image: "https://images.unsplash.com/photo-1626081048489-3c815e16572e?q=80&w=1974", color: "#f3e8d9" },
-    { id: 22, name: "Mango Lassi Sorbet", price: 279.00, description: "A refreshing, dairy-free sorbet bursting with the taste of ripe mangoes.", image: "https://images.unsplash.com/photo-1625862145398-6341f2351b8c?q=80&w=1974", color: "#fecaca" },
+    { id: 19, name: "Himalayan Salted Caramel", price: 299.00, description: "Sweet cream base with ribbons of house-made salted caramel.", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZVOEPtJ54zWBMQKQJA4aSrRQiGB45tuYVdw&s", color: "#fde68a" },
+    { id: 20, name: "Kolkata Meetha Paan", price: 349.00, description: "An adventurous flavor capturing the essence of the classic Indian treat.", image: "https://indulgecreamery.com/cdn/shop/files/DSC00159.jpg?v=1752150534&width=4096", color: "#a7f3d0" },
+    { id: 21, name: "Darjeeling Tea Infusion", price: 329.00, description: "Aromatic Darjeeling tea infused into a delicate, creamy base.", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdl4wbJf2HYdsPtIlntfcK5y0vsJ9AuzSMvg&s", color: "#f3e8d9" },
+    { id: 22, name: "Mango Lassi Sorbet", price: 279.00, description: "A refreshing, dairy-free sorbet bursting with the taste of ripe mangoes.", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTp95An5uGm1QXcitybRWf3CT6UedubflaylA&s", color: "#fecaca" },
   ];
 
   const handleAddToCart = (product, e) => {
