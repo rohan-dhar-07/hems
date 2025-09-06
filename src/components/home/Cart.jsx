@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, forwardRef } from 'react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
+import { Link } from 'react-router-dom';
 
 // A single cart item component with quantity controls
 const CartItem = ({ item, onIncrease, onDecrease }) => (
@@ -90,9 +91,11 @@ const Cart = forwardRef(({ cartItems = [], onIncrease, onDecrease }, ref) => {
               <span>Subtotal</span>
               <span>₹{subtotal.toFixed(2)}</span>
             </div>
-            <button className="w-full bg-rose-500 text-white font-bold py-3 rounded-lg shadow-md hover:bg-rose-600 transition-colors">
-              Proceed to Checkout
-            </button>
+            <Link to="/checkout">
+      <button className="w-full bg-rose-500 text-white font-bold py-3 rounded-lg shadow-md hover:bg-rose-600 transition-colors">
+        Proceed to Checkout
+      </button>
+    </Link>
           </div>
         )}
       </div>

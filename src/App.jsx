@@ -16,6 +16,7 @@ import CakesPage from './pages/CakePage';
 import PastriesPage from './pages/PastriesPage';
 import BreadsPage from './pages/BreadsPage';
 import IceCreamPage from './pages/IceCreamPage';
+import CheckoutPage from './pages/CheckoutPage';
 
 const App = () => {
   return (
@@ -35,6 +36,7 @@ const App = () => {
         <Route path='/pastries' element={<PastriesPage/>} />
         <Route path='/breads' element={<BreadsPage/>} />
         <Route path='/icecream' element={<IceCreamPage/>} />
+        <Route path='/checkout' element={<CheckoutPage />}/>
       </Routes>
       </Stairs>
     </div>
