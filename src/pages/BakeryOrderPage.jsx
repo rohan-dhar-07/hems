@@ -13,6 +13,7 @@ gsap.registerPlugin(ScrollTrigger);
 const BakeryOrderPage = () => {
   const [cartItems, setCartItems] = useState([]);
   const [flyingItem, setFlyingItem] = useState(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const container = useRef(null);
   const cartRef = useRef(null);
 
@@ -72,11 +73,83 @@ const BakeryOrderPage = () => {
       .to(".offer-button", { scale: 1.05, repeat: -1, yoyo: true, duration: 1.5, ease: 'sine.inOut' });
   }, { scope: container });
 
+  // Calculate total number of items in the cart
+  const totalCartItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+
   return (
-    <div ref={container} className="min-h-screen bg-gradient-to-br from-amber-50 to-pink-50 overflow-x-hidden font-[sans-serif]">
+    // Added padding-bottom (pb-24) to prevent bottom nav from overlapping the footer
+    <div ref={container} className="min-h-screen bg-gradient-to-br from-amber-50 to-pink-50 overflow-x-hidden font-[sans-serif] pb-24">
+      
+      {/* Non-visual components like modals or sidebars can remain here */}
+    
+
+
+{/* START: COMBINED FLOATING TOP BAR */}
+{/* START: CORRECTED FLOATING TOP BAR */}
+<header className="bg-white/90 backdrop-blur-sm sticky top-0 z-40 shadow-sm relative">
+  <div className="container mx-auto px-4 flex justify-between items-center h-20">
+    
+    {/* Left Side: Your Navbar */}
+    
       <Navbar />
-      <Cart ref={cartRef} cartItems={cartItems} />
-      <Auth /> {/* 2. ADDED THE AUTH COMPONENT HERE */}
+    
+
+    {/* Right Side: Actions */}
+    <div className="flex items-center space-x-2">
+      
+      {/* Search Bar (hidden on mobile) */}
+      <div className="relative hidden md:block">
+        <input 
+          type="text" 
+          placeholder="Search..." 
+          className="w-48 pl-4 pr-2 py-2 rounded-full border border-gray-300 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400" 
+        />
+      </div>
+
+      {/* Auth/Account Icon Link */}
+      <Link to="/auth" className="p-2 rounded-full hover:bg-amber-100 transition-colors" aria-label="Account">
+        <svg className="h-7 w-7 text-amber-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+      </Link>
+
+      {/* Cart Icon Link */}
+      <Link to="/cart" className="relative p-2 rounded-full hover:bg-amber-100 transition-colors" aria-label="Cart">
+        <svg className="h-7 w-7 text-amber-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+        </svg>
+        {totalCartItems > 0 && (
+          <span className="absolute -top-1 -right-1 block h-5 w-5 rounded-full bg-pink-500 text-white text-xs flex items-center justify-center font-bold">
+            {totalCartItems}
+          </span>
+        )}
+      </Link>
+
+      {/* Mobile Menu Hamburger Button */}
+      <div className="md:hidden">
+        <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-2 rounded-full hover:bg-amber-100 transition-colors" aria-label="Open menu">
+          <svg className="h-7 w-7 text-amber-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16m-7 6h7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  {/* MOBILE MENU OVERLAY */}
+  {isMenuOpen && (
+    <div className="absolute top-full left-0 w-full bg-white shadow-lg md:hidden">
+      <div className="flex flex-col px-4 pt-2 pb-4 space-y-2">
+        <Link to="/custom-orders" className="text-gray-700 hover:text-pink-600 font-medium py-2">Custom Orders</Link>
+        <Link to="/gifting" className="text-gray-700 hover:text-pink-600 font-medium py-2">Gifting & Events</Link>
+        <Link to="/about" className="text-gray-700 hover:text-pink-600 font-medium py-2">About Us</Link>
+        <Link to="/contact" className="text-gray-700 hover:text-pink-600 font-medium py-2">Contact</Link>
+      </div>
+    </div>
+  )}
+</header>
+{/* END: CORRECTED FLOATING TOP BAR */}
+{/* END: COMBINED FLOATING TOP BAR */}
       
       {flyingItem && <img src={flyingItem.src} className="flying-item fixed w-24 h-24 object-cover rounded-full z-[999] pointer-events-none" alt="" />}
 
@@ -115,7 +188,7 @@ const BakeryOrderPage = () => {
                 <p className="text-gray-600 mb-4 h-12">{product.description}</p>
                 <div className="flex justify-between items-center mt-6">
                   <span className="text-3xl font-bold text-pink-700">₹{product.price.toFixed(2)}</span>
-                  <button onClick={(e) => handleAddToCart(e, product)} className="bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-6 rounded-full transition-colors">
+                  <button onClick={(e) => handleAddToCart(product, e)} className="bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-6 rounded-full transition-colors">
                     Add to Cart
                   </button>
                 </div>
@@ -144,9 +217,47 @@ const BakeryOrderPage = () => {
           </div>
         </div>
       </footer>
+
+      {/* START: BOTTOM NAVIGATION BAR - VISIBLE ON ALL DEVICES */}
+{/* The 'md:hidden' class has been removed from the line below */}
+<div className="fixed bottom-0 left-0 right-0 bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.1)] z-50">
+  <div className="container mx-auto h-20 flex justify-around items-center">
+    <a href="#" className="flex flex-col items-center justify-center text-center text-amber-800 hover:text-pink-600 transition-colors w-full h-full">
+      <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+      </svg>
+      <span className="text-xs mt-1 font-semibold">Home</span>
+    </a>
+    <a href="#" className="flex flex-col items-center justify-center text-center text-gray-500 hover:text-pink-600 transition-colors w-full h-full">
+      <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+      </svg>
+      <span className="text-xs mt-1 font-semibold">Categories</span>
+    </a>
+    <a href="#" className="flex flex-col items-center justify-center text-center text-gray-500 hover:text-pink-600 transition-colors w-full h-full">
+      <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+      </svg>
+      <span className="text-xs mt-1 font-semibold">Cart</span>
+    </a>
+    <a href="#" className="flex flex-col items-center justify-center text-center text-gray-500 hover:text-pink-600 transition-colors w-full h-full">
+      <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+      </svg>
+      <span className="text-xs mt-1 font-semibold">Wishlist</span>
+    </a>
+    <a href="#" className="flex flex-col items-center justify-center text-center text-gray-500 hover:text-pink-600 transition-colors w-full h-full">
+      <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+      </svg>
+      <span className="text-xs mt-1 font-semibold">Profile</span>
+    </a>
+  </div>
+</div>
+{/* END: BOTTOM NAVIGATION BAR */}
+
     </div>
   );
 };
 
 export default BakeryOrderPage;
-
