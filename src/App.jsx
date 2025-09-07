@@ -17,6 +17,7 @@ import PastriesPage from './pages/PastriesPage';
 import BreadsPage from './pages/BreadsPage';
 import IceCreamPage from './pages/IceCreamPage';
 import CheckoutPage from './pages/CheckoutPage';
+import Auth from './components/Auth';
 
 const App = () => {
   return (
@@ -37,6 +38,7 @@ const App = () => {
         <Route path='/breads' element={<BreadsPage/>} />
         <Route path='/icecream' element={<IceCreamPage/>} />
         <Route path='/checkout' element={<CheckoutPage />}/>
+        <Route path='/auth' element={<Auth />}/>
       </Routes>
       </Stairs>
     </div>
