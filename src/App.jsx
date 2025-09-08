@@ -18,6 +18,12 @@ import BreadsPage from './pages/BreadsPage';
 import IceCreamPage from './pages/IceCreamPage';
 import CheckoutPage from './pages/CheckoutPage';
 import Auth from './components/Auth';
+import BottomSection from './components/projects/BottomSection';
+import MiddleContent from './components/projects/MiddleContent';
+import TopBar from './components/projects/TopBar';
+
+// Import the divided components
+
 
 
 const App = () => {
@@ -41,6 +47,11 @@ const App = () => {
         <Route path='/checkout' element={<CheckoutPage />}/>
         <Route path='/auth' element={<Auth />}/>
         
+        {/* Add these routes for the individual components if needed */}
+        <Route path='/topbar' element={<TopBar />} />
+        <Route path='/middlecontent' element={<MiddleContent />} />
+        <Route path='/bottomsection' element={<BottomSection />} />
+        
       </Routes>
       </Stairs>
     </div>
@@ -48,4 +59,3 @@ const App = () => {
 };
 
 export default App;
-

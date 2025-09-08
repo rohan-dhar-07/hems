@@ -1,6 +1,6 @@
 import React from 'react';
 
-const BottomPart = () => {
+const BottomSection = () => {
   return (
     <>
       <footer className="bg-amber-900 text-amber-50 py-12">
@@ -15,7 +15,8 @@ const BottomPart = () => {
         </div>
       </footer>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.1)] md:hidden z-50">
+      {/* BOTTOM NAVIGATION BAR */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.1)] z-50">
         <div className="container mx-auto h-20 flex justify-around items-center">
           <a href="#" className="flex flex-col items-center justify-center text-center text-amber-800 hover:text-pink-600 transition-colors w-full h-full">
             <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -53,4 +54,4 @@ const BottomPart = () => {
   );
 };
 
-export default BottomPart;
+export default BottomSection;
