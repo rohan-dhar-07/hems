@@ -21,6 +21,9 @@ import Auth from './components/Auth';
 import BottomSection from './components/projects/BottomSection';
 import MiddleContent from './components/projects/MiddleContent';
 import TopBar from './components/projects/TopBar';
+import ProfilePage from './pages/ProfilePage';
+import WishlistPage from './pages/WishlistPage';
+
 
 // Import the divided components
 
@@ -51,6 +54,8 @@ const App = () => {
         <Route path='/topbar' element={<TopBar />} />
         <Route path='/middlecontent' element={<MiddleContent />} />
         <Route path='/bottomsection' element={<BottomSection />} />
+        <Route path='/profilepage' element={<ProfilePage />} />
+        <Route path='/wishlist' element={<WishlistPage />} />
         
       </Routes>
       </Stairs>

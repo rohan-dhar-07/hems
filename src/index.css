@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap');
 @import "tailwindcss";
 
 @font-face {
@@ -10,6 +11,136 @@
   src: url(../fonts/Lausanne-500.woff2);
 }
 
-body{
-  background-color: #111;
+body {
+  background-color: #fef7ed; /* Warm off-white background instead of pure black */
+  color: #5a3807; /* Dark brown text color for bakery theme */
+  font-family: font1, sans-serif;
+}
+
+/* Bakery theme specific styles */
+.font-playfair {
+  font-family: 'Playfair Display', serif;
+}
+
+.category-card {
+  transition: transform 0.3s ease;
+}
+
+.category-card:hover {
+  transform: translateY(-8px);
+}
+
+/* GSAP animations for the categories section */
+.categories-section {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+/* Custom bakery color palette */
+.bg-bakery-primary {
+  background-color: #d97706; /* Amber-600 */
+}
+
+.text-bakery-primary {
+  color: #d97706;
+}
+
+.border-bakery-primary {
+  border-color: #d97706;
+}
+
+.bg-bakery-secondary {
+  background-color: #f59e0b; /* Amber-500 */
+}
+
+.text-bakery-secondary {
+  color: #f59e0b;
+}
+
+.bg-bakery-accent {
+  background-color: #fbbf24; /* Amber-400 */
+}
+
+.text-bakery-accent {
+  color: #fbbf24;
+}
+
+.bg-bakery-dark {
+  background-color: #92400e; /* Amber-900 */
+}
+
+.text-bakery-dark {
+  color: #92400e;
+}
+
+.bg-bakery-light {
+  background-color: #fef3c7; /* Amber-100 */
+}
+
+.text-bakery-light {
+  color: #fef3c7;
+}
+
+/* Custom scrollbar for bakery theme */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fef3c7;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d97706;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #b45309;
+}
+
+/* Animation keyframes for bakery theme */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-bakery {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+
+.pulse-bakery {
+  animation: pulse-bakery 2s ease-in-out infinite;
+}
+
+/* Button styles for bakery theme */
+.bakery-btn {
+  @apply bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-6 rounded-full transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg;
+}
+
+.bakery-btn-secondary {
+  @apply bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold py-3 px-6 rounded-full transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg;
+}
+
+/* Card styles for bakery theme */
+.bakery-card {
+  @apply bg-white rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl hover:transform hover:scale-105;
+}
+
+/* Input styles for bakery theme */
+.bakery-input {
+  @apply rounded-full border border-amber-200 bg-amber-50 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent;
 }
