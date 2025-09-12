@@ -1,7 +1,88 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
 
 const MiddleContent = ({ bakeryProducts, handleAddToCart, flyingItem }) => {
+  const categoriesContainer = useRef(null);
+
+  // All GSAP animations are managed within this hook for proper cleanup.
+  useGSAP(() => {
+    // --- TITLE ANIMATION ---
+    gsap.from(".category-title-word", {
+      y: 60, opacity: 0, duration: 1, ease: 'power3.out', stagger: 0.1,
+      scrollTrigger: { trigger: ".category-title", start: 'top 85%' }
+    });
+    
+    // --- NEW: CARD SCROLL-IN ANIMATION ---
+    // Cards on the left slide in from the left, cards on the right from the right.
+    gsap.from(".card-from-left", {
+      x: -100, opacity: 0, duration: 0.8, stagger: 0.15, ease: 'power3.out',
+      scrollTrigger: { trigger: ".category-grid", start: 'top 85%' }
+    });
+    gsap.from(".card-from-right", {
+      x: 100, opacity: 0, duration: 0.8, stagger: 0.15, ease: 'power3.out',
+      scrollTrigger: { trigger: ".category-grid", start: 'top 85%' }
+    });
+
+    // --- NEW: MAGNETIC & MORPHING HOVER ANIMATION ---
+    const cards = gsap.utils.toArray('.category-card');
+    
+    cards.forEach(card => {
+      const icon = card.querySelector('.card-icon');
+
+      // Mouse Move for Magnetic Effect
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        // Move card towards cursor
+        gsap.to(card, {
+          x: (x - rect.width / 2) * 0.4,
+          y: (y - rect.height / 2) * 0.4,
+          duration: 1,
+          ease: 'power3.out'
+        });
+      });
+      
+      // Mouse Enter for Morphing Effect
+      card.addEventListener('mouseenter', () => {
+        gsap.to(card, {
+          scale: 1.05,
+          borderRadius: '1.25rem', // Slightly less rounded
+          duration: 0.5,
+          ease: 'elastic.out(1, 0.4)'
+        });
+        gsap.to(icon, {
+          scale: 1.1,
+          rotate: '5deg',
+          duration: 0.5,
+          ease: 'elastic.out(1, 0.3)'
+        });
+      });
+
+      // Mouse Leave to Reset
+      card.addEventListener('mouseleave', () => {
+        gsap.to(card, {
+          x: 0,
+          y: 0,
+          scale: 1,
+          borderRadius: '1.875rem', // Back to original rounded-3xl
+          duration: 1.2,
+          ease: 'elastic.out(1, 0.3)'
+        });
+        gsap.to(icon, {
+          scale: 1,
+          rotate: '0deg',
+          duration: 1.2,
+          ease: 'elastic.out(1, 0.3)'
+        });
+      });
+    });
+
+  }, { scope: categoriesContainer });
+
   return (
     <>
       {flyingItem && <img src={flyingItem.src} className="flying-item fixed w-24 h-24 object-cover rounded-full z-[999] pointer-events-none" alt="" />}
@@ -17,90 +98,68 @@ const MiddleContent = ({ bakeryProducts, handleAddToCart, flyingItem }) => {
         <div className="absolute top-1/3 right-1/4 w-16 h-16 bg-yellow-200 rounded-full opacity-30 featured-product"></div>
       </div>
 
-      <div className="categories-section py-16 bg-gradient-to-b from-amber-50 to-amber-100 relative overflow-hidden">
-  {/* Decorative elements */}
-  <div className="absolute -top-10 -left-10 w-28 h-28 bg-amber-300/20 rounded-full"></div>
-  <div className="absolute bottom-10 -right-8 w-24 h-24 bg-rose-300/20 rounded-full"></div>
-  <div className="absolute top-1/3 left-1/4 w-16 h-16 bg-amber-200/30 rounded-full"></div>
-  
-  <div className="container mx-auto px-4 relative z-10">
-    <h2 className="text-5xl font-bold text-center text-amber-900 mb-4 font-playfair">Our Bakery Selection</h2>
-    <p className="text-lg text-amber-700 text-center max-w-2xl mx-auto mb-16">
-      Discover our handcrafted delights, baked fresh daily with love and tradition
-    </p>
-    
-    <div className="flex flex-wrap justify-center gap-8">
-      <Link to="/cake">
-        <div className="category-card group relative cursor-pointer">
-          <div className="w-48 h-48 rounded-3xl bg-gradient-to-br from-amber-500 to-amber-700 shadow-lg flex items-center justify-center transition-all duration-500 group-hover:scale-105 group-hover:shadow-xl group-hover:from-amber-600 group-hover:to-amber-800">
-            <div className="text-center p-6">
-              <div className="mb-3 transform group-hover:scale-110 transition-transform duration-300">
-                <svg className="w-12 h-12 mx-auto text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd"></path>
-                </svg>
+      <div ref={categoriesContainer} className="py-20 bg-white/70 backdrop-blur-md overflow-hidden">
+        <div className="container mx-auto px-4">
+          <h2 className="category-title text-4xl md:text-5xl font-bold text-center text-amber-900 mb-16">
+            {"Browse Our Selection".split(" ").map((word, index) => (
+              <span key={index} className="inline-block overflow-hidden">
+                <span className="inline-block category-title-word pr-2">{word}</span>
+              </span>
+            ))}
+          </h2>
+          <div className="category-grid flex flex-wrap justify-center gap-8 md:gap-12">
+            
+            <Link to="/cake">
+              <div className="category-card card-from-left w-48 h-56 bg-gradient-to-br from-amber-400 to-amber-600 rounded-3xl shadow-lg cursor-pointer">
+                <div className="flex flex-col items-center justify-center h-full text-white p-4">
+                  <div className="card-icon mb-3">
+                    <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 15.795c-.225.265-.45.525-.675.785A10.96 10.96 0 0112 21c-2.204 0-4.22-.64-5.962-1.755-.225-.26-.45-.52-.675-.785m13.312 0c-3.558 1.49-7.108 1.49-10.666 0M3 8.205c.225-.26.45-.52.675-.785A10.96 10.96 0 0112 3c2.204 0 4.22.64 5.962 1.755.225.26.45.52.675.785m-13.312 0c3.558-1.49 7.108-1.49 10.666 0" /></svg>
+                  </div>
+                  <span className="font-bold text-xl">Cakes</span>
+                </div>
               </div>
-              <span className="text-white font-bold text-xl font-playfair">Cakes</span>
-            </div>
-          </div>
-          <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4/5 h-3 bg-amber-800/30 blur-md rounded-full group-hover:bg-amber-900/40 transition-all duration-300"></div>
-        </div>
-      </Link>
-      
-      <Link to="/pastries">
-        <div className="category-card group relative cursor-pointer">
-          <div className="w-48 h-48 rounded-3xl bg-gradient-to-br from-amber-500 to-amber-700 shadow-lg flex items-center justify-center transition-all duration-500 group-hover:scale-105 group-hover:shadow-xl group-hover:from-amber-600 group-hover:to-amber-800">
-            <div className="text-center p-6">
-              <div className="mb-3 transform group-hover:scale-110 transition-transform duration-300">
-                <svg className="w-12 h-12 mx-auto text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                  <path fillRule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clipRule="evenodd"></path>
-                </svg>
+            </Link>
+
+            <Link to="/pastries">
+              <div className="category-card card-from-left w-48 h-56 bg-gradient-to-br from-pink-400 to-pink-600 rounded-3xl shadow-lg cursor-pointer">
+                <div className="flex flex-col items-center justify-center h-full text-white p-4">
+                  <div className="card-icon mb-3">
+                    <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12.032,8.018c-1.33-1.322-3.481-1.322-4.811,0C5.9,9.34,5.9,11.474,7.221,12.796C10.211,15.761,12,12,12,12s1.789,3.761,4.779-0.796c1.32-1.322,1.32-3.456,0-4.778C15.513,6.696,13.362,6.696,12.032,8.018z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21.732,7.588c-1.76-1.746-4.223-2.436-6.6-2.019c-2.377,0.417-4.529,1.64-6.252,3.464c-2.316,2.585-3.428,5.83-3.327,9.07c0.852,2.83,3.018,4.996,5.848,5.848c3.24,0.101,6.485-1.011,9.07-3.327c1.824-1.723,3.047-3.875,3.464-6.252C24.283,11.968,23.491,9.334,21.732,7.588z" /></svg>
+                  </div>
+                  <span className="font-bold text-xl">Pastries</span>
+                </div>
               </div>
-              <span className="text-white font-bold text-xl font-playfair">Pastries</span>
-            </div>
-          </div>
-          <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4/5 h-3 bg-amber-800/30 blur-md rounded-full group-hover:bg-amber-900/40 transition-all duration-300"></div>
-        </div>
-      </Link>
-      
-      <Link to="/breads">
-        <div className="category-card group relative cursor-pointer">
-          <div className="w-48 h-48 rounded-3xl bg-gradient-to-br from-amber-500 to-amber-700 shadow-lg flex items-center justify-center transition-all duration-500 group-hover:scale-105 group-hover:shadow-xl group-hover:from-amber-600 group-hover:to-amber-800">
-            <div className="text-center p-6">
-              <div className="mb-3 transform group-hover:scale-110 transition-transform duration-300">
-                <svg className="w-12 h-12 mx-auto text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
-                  <path fillRule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clipRule="evenodd"></path>
-                </svg>
+            </Link>
+            
+            <Link to="/breads">
+              <div className="category-card card-from-right w-48 h-56 bg-gradient-to-br from-amber-600 to-amber-800 rounded-3xl shadow-lg cursor-pointer">
+                <div className="flex flex-col items-center justify-center h-full text-white p-4">
+                  <div className="card-icon mb-3">
+                    <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6z M4 12h16" /></svg>
+                  </div>
+                  <span className="font-bold text-xl">Breads</span>
+                </div>
               </div>
-              <span className="text-white font-bold text-xl font-playfair">Breads</span>
-            </div>
-          </div>
-          <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4/5 h-3 bg-amber-800/30 blur-md rounded-full group-hover:bg-amber-900/40 transition-all duration-300"></div>
-        </div>
-      </Link>
-      
-      <Link to="/icecream">
-        <div className="category-card group relative cursor-pointer">
-          <div className="w-48 h-48 rounded-3xl bg-gradient-to-br from-amber-500 to-amber-700 shadow-lg flex items-center justify-center transition-all duration-500 group-hover:scale-105 group-hover:shadow-xl group-hover:from-amber-600 group-hover:to-amber-800">
-            <div className="text-center p-6">
-              <div className="mb-3 transform group-hover:scale-110 transition-transform duration-300">
-                <svg className="w-12 h-12 mx-auto text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z" clipRule="evenodd"></path>
-                </svg>
+            </Link>
+
+            <Link to="/icecream">
+              <div className="category-card card-from-right w-48 h-56 bg-gradient-to-br from-sky-400 to-sky-600 rounded-3xl shadow-lg cursor-pointer">
+                <div className="flex flex-col items-center justify-center h-full text-white p-4">
+                  <div className="card-icon mb-3">
+                    <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 22a7.5 7.5 0 007.5-7.5c0-2.08-.84-3.957-2.197-5.303s-3.223-2.197-5.303-2.197S8.28 7.043 6.977 8.354A7.5 7.5 0 0012 22z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 2v2.25" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.75 9.75h1.5" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18.75 9.75h1.5" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6.343 5.343l1.06 1.06" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16.597 5.343l1.06 1.06" /></svg>
+                  </div>
+                  <span className="font-bold text-xl">Ice Cream</span>
+                </div>
               </div>
-              <span className="text-white font-bold text-xl font-playfair">Ice Cream</span>
-            </div>
+            </Link>
           </div>
-          <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4/5 h-3 bg-amber-800/30 blur-md rounded-full group-hover:bg-amber-900/40 transition-all duration-300"></div>
         </div>
-      </Link>
-    </div>
-  </div>
-</div>
+      </div>
       
+      {/* Products Section */}
       <div className="container mx-auto px-4 py-16">
         <div className="products-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
-          {bakeryProducts.map(product => (
+          {(bakeryProducts || []).map(product => (
             <div key={product.id} className="product-card bg-white rounded-2xl overflow-hidden shadow-lg [perspective:1000px]">
               <div className="h-64 overflow-hidden">
                 <img src={product.image} alt={product.name} className="w-full h-full object-cover"/>
@@ -120,6 +179,7 @@ const MiddleContent = ({ bakeryProducts, handleAddToCart, flyingItem }) => {
         </div>
       </div>
 
+      {/* Special Offer Section */}
       <div className="special-offer-section bg-amber-100 py-16 overflow-hidden">
         <div className="container mx-auto px-4 text-center">
           <h2 className="offer-title text-4xl font-bold text-amber-900 mb-6">A Sweet Surprise!</h2>
