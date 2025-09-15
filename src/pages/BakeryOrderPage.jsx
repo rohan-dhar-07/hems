@@ -3,17 +3,15 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-
 import BottomSection from '../components/projects/BottomSection';
 import MiddleContent from '../components/projects/MiddleContent';
 import TopBar from '../components/projects/TopBar';
-
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
 
 const BakeryOrderPage = () => {
-  const [cartItems, setCartItems] = useState([]);
+  const [productQuantities, setProductQuantities] = useState({});
   const [flyingItem, setFlyingItem] = useState(null);
   const container = useRef(null);
   const cartRef = useRef(null);
@@ -26,28 +24,34 @@ const BakeryOrderPage = () => {
     { id: 5, name: "Celebration Cupcakes", price: 599.00, description: "A delightful pack of four assorted cupcakes.", image: "https://images.unsplash.com/photo-1614707267537-b85aaf00c4b7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80" },
     { id: 6, name: "Artisan Sourdough Loaf", price: 349.00, description: "Freshly baked with a perfectly crisp crust.", image: "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" }
   ];
-  
-  const handleAddToCart = (product, e) => {
-    gsap.to(e.currentTarget, { scale: 1.1, yoyo: true, repeat: 1, duration: 0.15, ease: 'power1.inOut' });
-    setCartItems(prevItems => {
-      const existingItem = prevItems.find(item => item.id === product.id);
-      if (existingItem) {
-        return prevItems.map(item =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-        );
-      }
-      return [...prevItems, { ...product, quantity: 1 }];
-    });
-    const productImg = e.currentTarget.closest('.product-card').querySelector('img');
-    const startRect = productImg.getBoundingClientRect();
-    const endRect = cartRef.current.getBoundingClientRect();
-    setFlyingItem({ src: product.image, startX: startRect.left + startRect.width / 2, startY: startRect.top + startRect.height / 2, endX: endRect.left + endRect.width / 2, endY: endRect.top + endRect.height / 2 });
+
+  const handleUpdateCart = (productId, quantity, e) => {
+    setProductQuantities(prevQuantities => ({
+      ...prevQuantities,
+      [productId]: quantity,
+    }));
+
+    if (quantity === 1 && e) {
+        const productImg = e.currentTarget.closest('.product-card').querySelector('img');
+        const startRect = productImg.getBoundingClientRect();
+        const endRect = cartRef.current.getBoundingClientRect();
+        setFlyingItem({
+            src: productImg.src,
+            startX: startRect.left + startRect.width / 2,
+            startY: startRect.top + startRect.height / 2,
+            endX: endRect.left + endRect.width / 2,
+            endY: endRect.top + endRect.height / 2
+        });
+    }
   };
 
   useGSAP(() => {
     if (flyingItem) {
       const flyer = document.querySelector('.flying-item');
-      gsap.fromTo(flyer, { left: flyingItem.startX, top: flyingItem.startY, opacity: 1, scale: 0.5 }, { left: flyingItem.endX, top: flyingItem.endY, opacity: 0, scale: 0, duration: 0.8, ease: 'power1.in', onComplete: () => setFlyingItem(null) });
+      gsap.fromTo(flyer, 
+        { left: flyingItem.startX, top: flyingItem.startY, opacity: 1, scale: 0.5, zIndex: 100 }, 
+        { left: flyingItem.endX, top: flyingItem.endY, opacity: 0, scale: 0, duration: 0.8, ease: 'power1.in', onComplete: () => setFlyingItem(null) 
+      });
     }
   }, [flyingItem]);
 
@@ -74,18 +78,31 @@ const BakeryOrderPage = () => {
       .to(".offer-button", { scale: 1.05, repeat: -1, yoyo: true, duration: 1.5, ease: 'sine.inOut' });
   }, { scope: container });
 
-  // Calculate total number of items in the cart
-  const totalCartItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+  const totalCartItems = Object.values(productQuantities).reduce((total, quantity) => total + quantity, 0);
 
   return (
-    <div ref={container} className="min-h-screen bg-gradient-to-br from-amber-50 to-pink-50 overflow-x-hidden font-[sans-serif] pb-24">
-      <TopBar totalCartItems={totalCartItems} />
-      <MiddleContent 
-        bakeryProducts={bakeryProducts} 
-        handleAddToCart={handleAddToCart} 
-        flyingItem={flyingItem} 
-      />
-      <BottomSection />
+    <div 
+      ref={container} 
+      className="relative min-h-screen font-[sans-serif] pb-24 
+                 bg-fixed bg-cover bg-center"
+      style={{ backgroundImage: `url('/logo/image44.webp')` }}
+    >
+      {/* Overlay for the light effect and text readability */}
+      <div className="absolute inset-0 bg-white opacity-60 pointer-events-none z-0"></div> 
+      
+      {/* Content will be above the overlay */}
+      <div className="relative z-10">
+        <TopBar totalCartItems={totalCartItems} cartRef={cartRef} />
+        {flyingItem && (
+            <img src={flyingItem.src} className="flying-item fixed block w-12 h-12 rounded-full z-[100] object-cover" alt="product" style={{ left: flyingItem.startX, top: flyingItem.startY }} />
+        )}
+        <MiddleContent 
+          bakeryProducts={bakeryProducts} 
+          handleUpdateCart={handleUpdateCart} 
+          productQuantities={productQuantities}
+        />
+        <BottomSection />
+      </div>
     </div>
   );
 };

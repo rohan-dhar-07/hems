@@ -1,51 +1,109 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
-const TopBar = ({ totalCartItems }) => {
+const TopBar = ({ totalCartItems, cartRef }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSearchActive, setIsSearchActive] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
+
+  const location = useLocation();
+
+  const allItems = [
+    'Chocolate Cake', 'Vanilla Cake', 'Red Velvet Cake', 'Cheesecake',
+    'Croissant', 'Pain au Chocolat', 'Muffin', 'Danish Pastry',
+    'Sourdough Bread', 'Rye Bread', 'Baguette', 'Focaccia',
+    'Strawberry Ice Cream', 'Chocolate Ice Cream', 'Vanilla Ice Cream', 'Mint Chip Ice Cream'
+  ];
+
+  const handleSearchChange = (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    if (query.length > 1) {
+      const filteredSuggestions = allItems.filter(item =>
+        item.toLowerCase().includes(query.toLowerCase())
+      );
+      setSuggestions(filteredSuggestions);
+    } else {
+      setSuggestions([]);
+    }
+  };
+
+  const handleSearchFocus = () => {
+    setIsSearchActive(true);
+  };
+
+  const handleSearchBlur = () => {
+    setTimeout(() => {
+      setIsSearchActive(false);
+    }, 200);
+  };
+  
+  const navItems = [
+    { name: 'Custom Orders', path: '/custom-orders' },
+    { name: 'Gifting & Events', path: '/gifting' },
+    { name: 'About Us', path: '/about' },
+  ];
 
   return (
-    <header className="bg-white/95 backdrop-blur-md sticky top-0 z-40 shadow-md border-b border-amber-100">
-      <div className="container mx-auto px-4 flex justify-between items-center h-16">
+    <header className="bg-white fixed top-0 w-full z-40 shadow-md border-b border-amber-100">
+      <div className="container mx-auto px-4 flex justify-between items-center h-13">
         
-        {/* Logo/Brand Name */}
         <Link to="/" className="flex items-center space-x-2">
-          <span className="text-2xl font-bold text-amber-700">HEMS</span>
-          <span className="text-xs text-pink-500 font-medium">BAKERY</span>
+          {/* Logo with a larger size (h-12 is 3rem or 48px) */}
+          <img src="/logo/image33.jpeg" alt="HEMS Bakery Logo" className="h-12 w-20" />
         </Link>
 
-        {/* Desktop Navigation (hidden on mobile) */}
-        <nav className="hidden md:flex items-center space-x-6">
-          <Link to="/custom-orders" className="text-gray-700 hover:text-pink-600 font-medium text-sm transition-colors">Custom Orders</Link>
-          <Link to="/gifting" className="text-gray-700 hover:text-pink-600 font-medium text-sm transition-colors">Gifting & Events</Link>
-          <Link to="/about" className="text-gray-700 hover:text-pink-600 font-medium text-sm transition-colors">About Us</Link>
-          <Link to="/contact" className="text-gray-700 hover:text-pink-600 font-medium text-sm transition-colors">Contact</Link>
+        <nav className="hidden md:flex items-center space-x-6 relative">
+          {navItems.map((item) => (
+            <Link 
+              key={item.name}
+              to={item.path} 
+              className="relative text-gray-700 hover:text-pink-600 font-medium text-sm transition-colors py-1 group"
+            >
+              {item.name}
+              <span className={`absolute bottom-0 left-0 h-0.5 bg-pink-500 transition-all duration-300 ${location.pathname === item.path ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
+            </Link>
+          ))}
         </nav>
 
-        {/* Right Side: Actions */}
         <div className="flex items-center space-x-3">
           
-          {/* Search Bar (hidden on mobile) */}
           <div className="relative hidden md:block">
             <input 
               type="text" 
               placeholder="Search pastries, cakes..." 
-              className="w-56 pl-4 pr-10 py-2 rounded-full border border-amber-200 bg-amber-50 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent" 
+              value={searchQuery}
+              onChange={handleSearchChange}
+              onFocus={handleSearchFocus}
+              onBlur={handleSearchBlur}
+              className="w-56 pl-4 pr-10 py-2 rounded-full border border-amber-200 bg-white text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent" 
             />
             <svg className="absolute right-3 top-2.5 h-4 w-4 text-amber-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
+            {isSearchActive && suggestions.length > 0 && (
+              <ul className="absolute top-full left-0 mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                {suggestions.map((item, index) => (
+                  <li key={index}>
+                    <Link 
+                      to={`/search?q=${item}`} 
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => {
+                        setSearchQuery(item);
+                        setSuggestions([]);
+                        setIsSearchActive(false);
+                      }}
+                    >
+                      {item}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
-          {/* Auth/Account Icon Link */}
-          <Link to="/auth" className="p-2 rounded-full hover:bg-amber-100 transition-colors" aria-label="Account">
-            <svg className="h-5 w-5 text-amber-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
-          </Link>
-
-          {/* Cart Icon Link */}
-          <Link to="/cart" className="relative p-2 rounded-full hover:bg-amber-100 transition-colors" aria-label="Cart">
+          <Link to="/cart" ref={cartRef} className="relativea p-2 rounded-full hover:bg-amber-100 transition-colors" aria-label="Cart">
             <svg className="h-5 w-5 text-amber-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
@@ -56,7 +114,6 @@ const TopBar = ({ totalCartItems }) => {
             )}
           </Link>
 
-          {/* Mobile Menu Hamburger Button */}
           <div className="md:hidden">
             <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-2 rounded-full hover:bg-amber-100 transition-colors" aria-label="Open menu">
               <svg className="h-5 w-5 text-amber-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -67,7 +124,6 @@ const TopBar = ({ totalCartItems }) => {
         </div>
       </div>
 
-      {/* MOBILE MENU OVERLAY */}
       {isMenuOpen && (
         <div className="absolute top-full left-0 w-full bg-white shadow-lg md:hidden border-t border-amber-100">
           <div className="flex flex-col px-4 pt-4 pb-6 space-y-4">
@@ -75,16 +131,43 @@ const TopBar = ({ totalCartItems }) => {
               <input 
                 type="text" 
                 placeholder="Search..." 
-                className="w-full pl-4 pr-10 py-2 rounded-full border border-amber-200 bg-amber-50 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400" 
+                value={searchQuery}
+                onChange={handleSearchChange}
+                className="w-full pl-4 pr-10 py-2 rounded-full border border-amber-200 bg-white text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-400" 
               />
               <svg className="absolute right-3 top-2.5 h-4 w-4 text-amber-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
+              {suggestions.length > 0 && (
+                <ul className="absolute top-full left-0 mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                  {suggestions.map((item, index) => (
+                    <li key={index}>
+                      <Link 
+                        to={`/search?q=${item}`} 
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => {
+                          setSearchQuery(item);
+                          setSuggestions([]);
+                          setIsMenuOpen(false);
+                        }}
+                      >
+                        {item}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
-            <Link to="/custom-orders" className="text-gray-700 hover:text-pink-600 font-medium py-2 border-b border-amber-50" onClick={() => setIsMenuOpen(false)}>Custom Orders</Link>
-            <Link to="/gifting" className="text-gray-700 hover:text-pink-600 font-medium py-2 border-b border-amber-50" onClick={() => setIsMenuOpen(false)}>Gifting & Events</Link>
-            <Link to="/about" className="text-gray-700 hover:text-pink-600 font-medium py-2 border-b border-amber-50" onClick={() => setIsMenuOpen(false)}>About Us</Link>
-            <Link to="/contact" className="text-gray-700 hover:text-pink-600 font-medium py-2" onClick={() => setIsMenuOpen(false)}>Contact</Link>
+            {navItems.map((item) => (
+              <Link
+                key={item.name}
+                to={item.path}
+                className="text-gray-700 hover:text-pink-600 font-medium py-2 border-b border-amber-50"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {item.name}
+              </Link>
+            ))}
           </div>
         </div>
       )}

@@ -19,7 +19,7 @@ const BottomSection = () => {
 
       {/* BOTTOM NAVIGATION BAR */}
       <div className="fixed bottom-0 left-0 right-0 bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.1)] z-50">
-        <div className="container mx-auto h-20 flex justify-around items-center">
+        <div className="container mx-auto h-16 flex justify-around items-center">
           {/* The `a` tags have been replaced with `Link` components for client-side routing. */}
           <Link to="/" className="flex flex-col items-center justify-center text-center text-amber-800 hover:text-pink-600 transition-colors w-full h-full">
             <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -27,12 +27,19 @@ const BottomSection = () => {
             </svg>
             <span className="text-xs mt-1 font-semibold">Home</span>
           </Link>
-          <Link to="/categories" className="flex flex-col items-center justify-center text-center text-gray-500 hover:text-pink-600 transition-colors w-full h-full">
-            <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="flex flex-col items-center justify-center text-center text-gray-500 hover:text-pink-600 transition-colors w-full h-full group relative">
+             <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
             </svg>
             <span className="text-xs mt-1 font-semibold">Categories</span>
-          </Link>
+            {/* DROPDOWN MENU */}
+            <div className="absolute bottom-full mb-2 hidden group-hover:block bg-white text-gray-800 p-2 rounded-lg shadow-lg">
+                <Link to="/categories/cakes" className="block px-4 py-2 hover:bg-gray-200 rounded">Cakes</Link>
+                <Link to="/categories/pastries" className="block px-4 py-2 hover:bg-gray-200 rounded">Pastries</Link>
+                <Link to="/categories/breads" className="block px-4 py-2 hover:bg-gray-200 rounded">Breads</Link>
+                <Link to="/categories/ice-cream" className="block px-4 py-2 hover:bg-gray-200 rounded">Ice Cream</Link>
+            </div>
+          </div>
           <Link to="/cart" className="flex flex-col items-center justify-center text-center text-gray-500 hover:text-pink-600 transition-colors w-full h-full">
             <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
