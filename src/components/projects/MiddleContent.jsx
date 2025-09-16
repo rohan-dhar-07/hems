@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-const MiddleContent = ({ bakeryProducts, handleUpdateCart, productQuantities }) => {
-  // ... all your handler functions remain unchanged ...
+// Accept the new props for the wishlist feature
+const MiddleContent = ({ bakeryProducts, handleUpdateCart, productQuantities, wishlistItems, onToggleWishlist }) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   const handleAddToCartClick = (product, e) => {
@@ -24,7 +24,7 @@ const MiddleContent = ({ bakeryProducts, handleUpdateCart, productQuantities }) 
 
   return (
     <div className="container mx-auto px-4 py-24">
-      {/* New and Enhanced Hero Section */}
+      {/* Hero Section */}
       <div className="text-center mb-16">
         <h1 className="hero-text text-5xl md:text-6xl font-extrabold text-amber-900 leading-tight mb-4 animate-fade-in-down">
           HEMS: Where Every Bite Tells a Story
@@ -33,28 +33,38 @@ const MiddleContent = ({ bakeryProducts, handleUpdateCart, productQuantities }) 
           Handcrafted with joy, our treats are a little piece of heaven. Explore our freshly baked goodness below and find your new favorite.
         </p>
         <div className="flex justify-center items-center space-x-4">
-          
-          {/* --- CORRECTED CODE --- */}
           <a href="#products" className="px-6 py-3 rounded-full bg-pink-500 text-white font-semibold transition-all duration-300 transform hover:scale-105 hover:bg-pink-600 animate-flicker">
             Explore Our Selection
           </a>
-
-          {/* --- CORRECTED CODE --- */}
           <Link to="/about" className="px-6 py-3 rounded-full border-2 border-amber-500 text-amber-600 font-semibold transition-all duration-300 transform hover:scale-105 hover:bg-amber-50 animate-flicker">
             Discover Our Story
           </Link>
         </div>
       </div>
 
-      {/* The rest of your component remains exactly the same */}
+      {/* Product Grid */}
       <div id="products" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* ... mapping over products ... */}
         {bakeryProducts.map(product => {
           const quantity = productQuantities[product.id] || 0;
+          // --- Check if the current product is in the wishlist ---
+          const isWishlisted = wishlistItems.some(item => item.id === product.id);
           
           return (
             <div key={product.id} className="product-card bg-white rounded-3xl overflow-hidden shadow-[0_0_15px_rgba(236,72,153,0.7)] transition-all duration-300 transform hover:-translate-y-2 hover:rotate-3 relative group flex flex-col">
+              
               <img src={product.image} alt={product.name} className="w-full h-56 object-cover transform transition-transform duration-500 group-hover:scale-110" />
+              
+              {/* --- NEW: Wishlist Heart Icon Button --- */}
+              <button
+                onClick={() => onToggleWishlist(product)}
+                className="absolute top-4 right-4 bg-white/70 backdrop-blur-sm p-2 rounded-full z-10 transition-transform duration-200 ease-in-out hover:scale-110 active:scale-90"
+                aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+              >
+                <svg className={`w-6 h-6 ${isWishlisted ? 'text-red-500' : 'text-gray-400'}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={isWishlisted ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                </svg>
+              </button>
+
               <div className="p-4 text-center flex flex-col flex-grow">
                 <h3 className="text-lg font-bold text-amber-800 mb-1">{product.name}</h3>
                 <p className="text-gray-600 text-xs mb-3 truncate">{product.description}</p>
@@ -86,7 +96,7 @@ const MiddleContent = ({ bakeryProducts, handleUpdateCart, productQuantities }) 
         })}
       </div>
 
-      {/* ... Pop-up modal remains unchanged ... */}
+      {/* Pop-up modal */}
       {selectedProduct && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
           <div className="bg-white rounded-3xl p-6 relative w-full max-w-lg shadow-xl animate-fade-in-down">
