@@ -15,7 +15,6 @@ const BakeryOrderPage = ({ wishlistItems, onToggleWishlist, cartItems, onUpdateC
   const container = useRef(null);
   const cartRef = useRef(null);
 
-  // --- FIX: The full bakeryProducts array has been restored here ---
   const bakeryProducts = [
       { id: 1, name: "Chocolate Decadence", price: 1499.00, description: "Rich chocolate cake with a molten core.", image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1089&q=80" },
       { id: 2, name: "Sunrise Blueberry Muffin", price: 249.00, description: "Packed with fresh, juicy blueberries.", image: "https://static.vecteezy.com/system/resources/previews/069/054/159/large_2x/freshly-baked-blueberry-muffins-cooling-on-a-wire-rack-on-the-beach-at-sunset-with-ocean-waves-photo.jpg" },
@@ -27,7 +26,7 @@ const BakeryOrderPage = ({ wishlistItems, onToggleWishlist, cartItems, onUpdateC
 
   const handleCartAndUpdateFlyingItem = (productId, quantity, e) => {
     if(onUpdateCart) onUpdateCart(productId, quantity);
-    if (quantity === 1 && e) {
+    if (quantity === 1 && e && cartRef.current) {
         const productImg = e.currentTarget.closest('.product-card').querySelector('img');
         const startRect = productImg.getBoundingClientRect();
         const endRect = cartRef.current.getBoundingClientRect();
@@ -42,8 +41,21 @@ const BakeryOrderPage = ({ wishlistItems, onToggleWishlist, cartItems, onUpdateC
   };
 
   useGSAP(() => {
+    // --- ORIGINAL ANIMATIONS (RESTORED) ---
     gsap.from(".hero-text", { y: 100, opacity: 0, duration: 1, stagger: 0.2, ease: "power3.out" });
     
+    gsap.utils.toArray('.product-card').forEach(card => {
+        gsap.from(card, {
+          scrollTrigger: { trigger: card, start: "top 85%", toggleActions: "play none none none" },
+          opacity: 0, y: 100, scale: 0.9, rotateX: -45, transformOrigin: "center bottom", duration: 0.8, ease: 'power2.out'
+        });
+        gsap.to(card.querySelector('img'), {
+          yPercent: -20, ease: 'none',
+          scrollTrigger: { trigger: card, scrub: true, start: "top bottom", end: "bottom top" },
+        });
+    });
+
+    // --- NEW PROMO SECTION ANIMATIONS ---
     const createPromoAnimation = (selector) => {
       gsap.from(`${selector} .promo-title`, { scrollTrigger: { trigger: selector, start: "top 80%" }, opacity: 0, y: 50, duration: 0.8, ease: 'power3.out' });
       gsap.from(`${selector} .promo-image`, { scrollTrigger: { trigger: selector, start: "top 75%" }, opacity: 0, y: 50, scale: 0.9, stagger: 0.2, duration: 0.7, ease: 'power2.out' });
@@ -54,6 +66,7 @@ const BakeryOrderPage = ({ wishlistItems, onToggleWishlist, cartItems, onUpdateC
     createPromoAnimation(".cakes-promo-section");
     createPromoAnimation(".breads-promo-section");
     createPromoAnimation(".icecream-promo-section");
+
   }, { scope: container });
 
   const totalCartItems = cartItems ? Object.values(cartItems).reduce((total, quantity) => total + quantity, 0) : 0;
@@ -62,7 +75,7 @@ const BakeryOrderPage = ({ wishlistItems, onToggleWishlist, cartItems, onUpdateC
     <div ref={container} className="relative min-h-screen font-[sans-serif] pb-24 bg-fixed bg-cover bg-center" style={{ backgroundImage: `url('/logo/image44.webp')` }}>
       <div className="absolute inset-0 bg-white opacity-60 pointer-events-none z-0"></div> 
       <div className="relative z-10">
-        <TopBar totalCartItems={totalCartItems} cartRef={cartRef} />
+        <TopBar totalCartItems={totalCartItems} ref={cartRef} />
         {flyingItem && ( <img src={flyingItem.src} className="flying-item fixed block w-12 h-12 rounded-full z-[100] object-cover" alt="product" style={{ left: flyingItem.startX, top: flyingItem.startY }} /> )}
         
         <MiddleContent 
@@ -73,7 +86,7 @@ const BakeryOrderPage = ({ wishlistItems, onToggleWishlist, cartItems, onUpdateC
           onToggleWishlist={onToggleWishlist}
         />
         
-        {/* Pastries Section */}
+        {/* All Promotional Sections */}
         <section className="pastries-promo-section container mx-auto px-4 py-16 text-center">
             <h2 className="promo-title text-4xl md:text-5xl font-extrabold text-amber-900">Craving More?</h2>
             <p className="promo-title text-lg text-gray-700 mt-2">Discover our flaky, buttery, and utterly irresistible pastries.</p>
@@ -87,7 +100,6 @@ const BakeryOrderPage = ({ wishlistItems, onToggleWishlist, cartItems, onUpdateC
             </div>
         </section>
 
-        {/* Cakes Section */}
         <section className="cakes-promo-section container mx-auto px-4 py-16 text-center bg-rose-50/50 rounded-3xl my-12">
             <h2 className="promo-title text-4xl md:text-5xl font-extrabold text-rose-900">For Every Celebration</h2>
             <p className="promo-title text-lg text-gray-700 mt-2">From birthdays to anniversaries, find the perfect cake.</p>
@@ -101,7 +113,6 @@ const BakeryOrderPage = ({ wishlistItems, onToggleWishlist, cartItems, onUpdateC
             </div>
         </section>
 
-        {/* Breads Section */}
         <section className="breads-promo-section container mx-auto px-4 py-16 text-center">
             <h2 className="promo-title text-4xl md:text-5xl font-extrabold text-amber-900">Our Daily Bread</h2>
             <p className="promo-title text-lg text-gray-700 mt-2">Artisan loaves, baked fresh every morning.</p>
@@ -115,7 +126,6 @@ const BakeryOrderPage = ({ wishlistItems, onToggleWishlist, cartItems, onUpdateC
             </div>
         </section>
 
-        {/* Ice Cream Section */}
         <section className="icecream-promo-section container mx-auto px-4 py-16 text-center bg-sky-50/50 rounded-3xl my-12">
             <h2 className="promo-title text-4xl md:text-5xl font-extrabold text-sky-900">Cool Down in Style</h2>
             <p className="promo-title text-lg text-gray-700 mt-2">Hand-churned ice cream, the perfect sweet escape.</p>
