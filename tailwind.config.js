@@ -1,16 +1,23 @@
+// tailwind.config.js
+
 /** @type {import('tailwindcss').Config} */
-module.exports = {
-    // This content property is the most important part.
-    // It tells Tailwind to scan all of your .jsx and .html files inside the 'src'
-    // folder (and the root index.html) for any class names you have used.
-    content: [
-      "./index.html",
-      "./src/**/*.{js,jsx,ts,tsx}",
-    ],
-    theme: {
-      extend: {},
+export default {
+  content: [
+    "./src/**/*.{js,ts,jsx,tsx,css}", // This path is correct
+  ],
+  theme: {
+    extend: {
+      // Your flicker animation is correct
+      keyframes: {
+        flicker: {
+          '0%, 100%': { filter: 'drop-shadow(0 0 8px rgba(236, 72, 153, 0.7))' },
+          '50%': { filter: 'drop-shadow(0 0 16px rgba(236, 72, 153, 0.9))' }
+        }
+      },
+      animation: {
+        flicker: 'flicker 2s ease-in-out infinite',
+      }
     },
-    plugins: [],
-  };
-  
-  
+  },
+  plugins: [],
+}

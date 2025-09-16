@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 const TopBar = ({ totalCartItems, cartRef }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchActive, setIsSearchActive] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false); // New state for mobile search
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
 
@@ -29,15 +30,15 @@ const TopBar = ({ totalCartItems, cartRef }) => {
     }
   };
 
-  const handleSearchFocus = () => {
-    setIsSearchActive(true);
-  };
+  const handleSearchFocus = () => setIsSearchActive(true);
+  const handleSearchBlur = () => setTimeout(() => setIsSearchActive(false), 200);
 
-  const handleSearchBlur = () => {
-    setTimeout(() => {
-      setIsSearchActive(false);
-    }, 200);
-  };
+  // Effect to close mobile menu if mobile search is opened
+  useEffect(() => {
+    if (isMobileSearchOpen) {
+      setIsMenuOpen(false);
+    }
+  }, [isMobileSearchOpen]);
   
   const navItems = [
     { name: 'Custom Orders', path: '/custom-orders' },
@@ -45,16 +46,22 @@ const TopBar = ({ totalCartItems, cartRef }) => {
     { name: 'About Us', path: '/about' },
   ];
 
+  const closeMobileSearch = () => {
+    setIsMobileSearchOpen(false);
+    setSearchQuery('');
+    setSuggestions([]);
+  };
+
   return (
     <header className="bg-white fixed top-0 w-full z-40 shadow-md border-b border-amber-100">
-      <div className="container mx-auto px-4 flex justify-between items-center h-13">
+      <div className="container mx-auto px-4 flex justify-between items-center h-16 relative">
         
         <Link to="/" className="flex items-center space-x-2">
-          {/* Logo with a larger size (h-12 is 3rem or 48px) */}
-          <img src="/logo/image33.jpeg" alt="HEMS Bakery Logo" className="h-12 w-20" />
+          <img src="/logo/image33.jpeg" alt="HEMS Bakery Logo" className="h-12 w-auto" />
         </Link>
 
-        <nav className="hidden md:flex items-center space-x-6 relative">
+        {/* --- DESKTOP NAVIGATION --- */}
+        <nav className="hidden md:flex items-center space-x-6">
           {navItems.map((item) => (
             <Link 
               key={item.name}
@@ -66,9 +73,11 @@ const TopBar = ({ totalCartItems, cartRef }) => {
             </Link>
           ))}
         </nav>
-
-        <div className="flex items-center space-x-3">
+        
+        {/* --- ICONS & DESKTOP SEARCH --- */}
+        <div className="flex items-center space-x-2 sm:space-x-3">
           
+          {/* Desktop Search Bar */}
           <div className="relative hidden md:block">
             <input 
               type="text" 
@@ -77,7 +86,7 @@ const TopBar = ({ totalCartItems, cartRef }) => {
               onChange={handleSearchChange}
               onFocus={handleSearchFocus}
               onBlur={handleSearchBlur}
-              className="w-56 pl-4 pr-10 py-2 rounded-full border border-amber-200 bg-white text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent" 
+              className="w-56 pl-4 pr-10 py-2 rounded-full border border-amber-200 bg-white text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-400" 
             />
             <svg className="absolute right-3 top-2.5 h-4 w-4 text-amber-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -85,25 +94,21 @@ const TopBar = ({ totalCartItems, cartRef }) => {
             {isSearchActive && suggestions.length > 0 && (
               <ul className="absolute top-full left-0 mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg z-50">
                 {suggestions.map((item, index) => (
-                  <li key={index}>
-                    <Link 
-                      to={`/search?q=${item}`} 
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      onClick={() => {
-                        setSearchQuery(item);
-                        setSuggestions([]);
-                        setIsSearchActive(false);
-                      }}
-                    >
-                      {item}
-                    </Link>
-                  </li>
+                  <li key={index}><Link to={`/search?q=${item}`} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setSearchQuery(item)}>{item}</Link></li>
                 ))}
               </ul>
             )}
           </div>
 
-          <Link to="/cart" ref={cartRef} className="relativea p-2 rounded-full hover:bg-amber-100 transition-colors" aria-label="Cart">
+          {/* --- NEW: Mobile Search Icon --- */}
+          <button onClick={() => setIsMobileSearchOpen(true)} className="p-2 rounded-full hover:bg-amber-100 transition-colors md:hidden" aria-label="Open search">
+            <svg className="h-5 w-5 text-amber-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
+
+          {/* Cart Icon */}
+          <Link to="/cart" ref={cartRef} className="relative p-2 rounded-full hover:bg-amber-100 transition-colors" aria-label="Cart">
             <svg className="h-5 w-5 text-amber-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
@@ -114,6 +119,7 @@ const TopBar = ({ totalCartItems, cartRef }) => {
             )}
           </Link>
 
+          {/* Hamburger Menu Icon */}
           <div className="md:hidden">
             <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-2 rounded-full hover:bg-amber-100 transition-colors" aria-label="Open menu">
               <svg className="h-5 w-5 text-amber-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -123,41 +129,37 @@ const TopBar = ({ totalCartItems, cartRef }) => {
           </div>
         </div>
       </div>
+      
+      {/* --- NEW: Mobile Search Overlay --- */}
+      {isMobileSearchOpen && (
+        <div className="absolute top-0 left-0 w-full h-16 bg-white z-50 flex items-center px-4 md:hidden border-b border-amber-200">
+          <input
+            type="text"
+            placeholder="Search pastries, cakes..."
+            className="w-full h-full text-gray-800 placeholder-gray-400 focus:outline-none"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            autoFocus
+          />
+          <button onClick={closeMobileSearch} className="p-2" aria-label="Close search">
+            <svg className="h-5 w-5 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          {suggestions.length > 0 && (
+            <ul className="absolute top-full left-0 mt-0 w-full bg-white border-t border-gray-200 shadow-lg">
+              {suggestions.map((item, index) => (
+                <li key={index}><Link to={`/search?q=${item}`} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={closeMobileSearch}>{item}</Link></li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
 
+      {/* --- Mobile Dropdown Menu (Search bar removed) --- */}
       {isMenuOpen && (
         <div className="absolute top-full left-0 w-full bg-white shadow-lg md:hidden border-t border-amber-100">
           <div className="flex flex-col px-4 pt-4 pb-6 space-y-4">
-            <div className="relative mb-2">
-              <input 
-                type="text" 
-                placeholder="Search..." 
-                value={searchQuery}
-                onChange={handleSearchChange}
-                className="w-full pl-4 pr-10 py-2 rounded-full border border-amber-200 bg-white text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-400" 
-              />
-              <svg className="absolute right-3 top-2.5 h-4 w-4 text-amber-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              {suggestions.length > 0 && (
-                <ul className="absolute top-full left-0 mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg z-50">
-                  {suggestions.map((item, index) => (
-                    <li key={index}>
-                      <Link 
-                        to={`/search?q=${item}`} 
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        onClick={() => {
-                          setSearchQuery(item);
-                          setSuggestions([]);
-                          setIsMenuOpen(false);
-                        }}
-                      >
-                        {item}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
             {navItems.map((item) => (
               <Link
                 key={item.name}

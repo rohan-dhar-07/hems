@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap');
-@import "tailwindcss";
+@import 'tailwindcss';
+/* --- THIS WAS THE FIX --- */
+/* Replaced the incorrect '@import "tailwindcss";' with the three required directives below. */
+
+
 
 @font-face {
   font-family: font1;
