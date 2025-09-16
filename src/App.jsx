@@ -1,6 +1,4 @@
-// src/App.jsx
-
-import React, { useState } from 'react'; // <-- Import useState
+import React, { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 // Import your pages
@@ -23,10 +21,8 @@ import ProfilePage from './pages/ProfilePage';
 import WishlistPage from './pages/WishlistPage';
 
 const App = () => {
-  // --- NEW: Manage wishlist state here ---
   const [wishlistItems, setWishlistItems] = useState([]);
 
-  // --- NEW: Function to add/remove items from the wishlist ---
   const handleToggleWishlist = (product) => {
     setWishlistItems(prevItems => {
       const isWishlisted = prevItems.some(item => item.id === product.id);
@@ -45,7 +41,6 @@ const App = () => {
           <Route path='/' element={<Home />} />
           {/* ... other routes ... */}
           
-          {/* --- NEW: Pass wishlist props to BakeryOrderPage --- */}
           <Route 
             path='/order' 
             element={
@@ -56,13 +51,13 @@ const App = () => {
             } 
           />
 
-          {/* --- NEW: Pass wishlist props to WishlistPage --- */}
+          {/* --- CHANGE: Pass the handler function instead of the raw setter --- */}
           <Route 
             path='/wishlist' 
             element={
               <WishlistPage 
                 wishlistItems={wishlistItems} 
-                setWishlistItems={setWishlistItems} // Pass the setter function
+                onToggleWishlist={handleToggleWishlist} // This is more consistent and safer
               />
             } 
           />
