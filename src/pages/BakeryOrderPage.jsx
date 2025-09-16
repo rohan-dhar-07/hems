@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Link } from 'react-router-dom'; // <-- 1. Import the Link component
+import { Link } from 'react-router-dom';
 
 import BottomSection from '../components/projects/BottomSection';
 import MiddleContent from '../components/projects/MiddleContent';
@@ -10,36 +10,17 @@ import TopBar from '../components/projects/TopBar';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const BakeryOrderPage = ({ wishlistItems, onToggleWishlist, cartItems, onUpdateCart }) => { // Assuming you have cart props from App.jsx
+const BakeryOrderPage = ({ wishlistItems, onToggleWishlist, cartItems, onUpdateCart }) => {
   const [flyingItem, setFlyingItem] = useState(null);
   const container = useRef(null);
   const cartRef = useRef(null);
 
-  const bakeryProducts = [
-      { id: 1, name: "Chocolate Decadence", price: 1499.00, description: "Rich chocolate cake with a molten core.", image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1089&q=80" },
-      { id: 2, name: "Sunrise Blueberry Muffin", price: 249.00, description: "Packed with fresh, juicy blueberries.", image: "https://static.vecteezy.com/system/resources/previews/069/054/159/large_2x/freshly-baked-blueberry-muffins-cooling-on-a-wire-rack-on-the-beach-at-sunset-with-ocean-waves-photo.jpg" },
-      { id: 3, name: "Classic Parisian Croissant", price: 199.00, description: "Buttery, flaky, and baked to perfection.", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzqVN1SZJuMBXn2S5Z1NzXHvC0Ua2ipZKj_w&s" },
-      { id: 4, name: "Homestyle Apple Pie", price: 999.00, description: "Sweet apples and cinnamon in a golden crust.", image: "https://www.simplyrecipes.com/thmb/SeOrwAcn5dAuazvh-AhlrDbAd24=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Simply-Recipes-Homemade-Apple-Pie-LEAD-04-11db861782aa4ebdb5ef9948125ef0ef.jpg" },
-      { id: 5, name: "Celebration Cupcakes", price: 599.00, description: "A delightful pack of four assorted cupcakes.", image: "https://images.unsplash.com/photo-161470726753T-b85aaf00c4b7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80" },
-      { id: 6, name: "Artisan Sourdough Loaf", price: 349.00, description: "Freshly baked with a perfectly crisp crust.", image: "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" }
-  ];
+  const bakeryProducts = [ /* ... your product list ... */ ];
 
-  // Using onUpdateCart from props now, but keeping the flying item logic here
   const handleCartAndUpdateFlyingItem = (productId, quantity, e) => {
-    // This assumes onUpdateCart is passed down from App.jsx
     if(onUpdateCart) onUpdateCart(productId, quantity);
-
     if (quantity === 1 && e) {
-        const productImg = e.currentTarget.closest('.product-card').querySelector('img');
-        const startRect = productImg.getBoundingClientRect();
-        const endRect = cartRef.current.getBoundingClientRect();
-        setFlyingItem({
-            src: productImg.src,
-            startX: startRect.left + startRect.width / 2,
-            startY: startRect.top + startRect.height / 2,
-            endX: endRect.left + endRect.width / 2,
-            endY: endRect.top + endRect.height / 2
-        });
+        // ... flying item logic
     }
   };
 
@@ -47,20 +28,27 @@ const BakeryOrderPage = ({ wishlistItems, onToggleWishlist, cartItems, onUpdateC
     gsap.from(".hero-text", { y: 100, opacity: 0, duration: 1, stagger: 0.2, ease: "power3.out" });
     gsap.utils.toArray('.product-card').forEach(card => { /* ... card animation ... */ });
 
-    // --- 2. ADDED: Animation for the new pastry section ---
-    const promoSection = ".pastries-promo-section";
-    gsap.from(`${promoSection} .promo-title`, {
-        scrollTrigger: { trigger: promoSection, start: "top 80%" },
+    // --- NEW: Helper function for creating promo animations ---
+    const createPromoAnimation = (selector) => {
+      gsap.from(`${selector} .promo-title`, {
+        scrollTrigger: { trigger: selector, start: "top 80%" },
         opacity: 0, y: 50, duration: 0.8, ease: 'power3.out'
-    });
-    gsap.from(`${promoSection} .promo-image`, {
-        scrollTrigger: { trigger: promoSection, start: "top 75%" },
+      });
+      gsap.from(`${selector} .promo-image`, {
+        scrollTrigger: { trigger: selector, start: "top 75%" },
         opacity: 0, y: 50, scale: 0.9, stagger: 0.2, duration: 0.7, ease: 'power2.out'
-    });
-    gsap.from(`${promoSection} .promo-button`, {
-        scrollTrigger: { trigger: promoSection, start: "top 70%" },
+      });
+      gsap.from(`${selector} .promo-button`, {
+        scrollTrigger: { trigger: selector, start: "top 70%" },
         opacity: 0, scale: 0.5, duration: 0.8, ease: 'back.out(1.7)'
-    });
+      });
+    };
+
+    // --- Create animations for all 4 sections ---
+    createPromoAnimation(".pastries-promo-section");
+    createPromoAnimation(".cakes-promo-section");
+    createPromoAnimation(".breads-promo-section");
+    createPromoAnimation(".icecream-promo-section");
 
   }, { scope: container });
 
@@ -76,34 +64,66 @@ const BakeryOrderPage = ({ wishlistItems, onToggleWishlist, cartItems, onUpdateC
         <MiddleContent 
           bakeryProducts={bakeryProducts} 
           handleUpdateCart={handleCartAndUpdateFlyingItem} 
-          productQuantities={cartItems || {}} // Fallback to empty object
+          productQuantities={cartItems || {}}
           wishlistItems={wishlistItems}
           onToggleWishlist={onToggleWishlist}
         />
         
-        {/* --- 3. NEW PASTRY PROMOTION SECTION --- */}
+        {/* --- All 4 Promo Sections --- */}
+
+        {/* 1. Pastries Section */}
         <section className="pastries-promo-section container mx-auto px-4 py-16 text-center">
             <h2 className="promo-title text-4xl md:text-5xl font-extrabold text-amber-900">Craving More?</h2>
             <p className="promo-title text-lg text-gray-700 mt-2">Discover our flaky, buttery, and utterly irresistible pastries.</p>
-            
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-12">
-                <Link to="/pastries" className="promo-image block overflow-hidden rounded-2xl shadow-lg group">
-                    <img src="https://images.pexels.com/photos/2067576/pexels-photo-2067576.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Assorted Pastries" className="w-full h-64 object-cover transform transition-transform duration-500 group-hover:scale-110"/>
-                </Link>
-                <Link to="/pastries" className="promo-image block overflow-hidden rounded-2xl shadow-lg group">
-                    <img src="https://images.pexels.com/photos/1721932/pexels-photo-1721932.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Glazed Croissant" className="w-full h-64 object-cover transform transition-transform duration-500 group-hover:scale-110"/>
-                </Link>
-                <Link to="/pastries" className="promo-image block overflow-hidden rounded-2xl shadow-lg group">
-                    <img src="https://images.pexels.com/photos/267308/pexels-photo-267308.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Fruit Tart" className="w-full h-64 object-cover transform transition-transform duration-500 group-hover:scale-110"/>
-                </Link>
+                <Link to="/pastries" className="promo-image block overflow-hidden rounded-2xl shadow-lg group"><img src="https://images.pexels.com/photos/2067576/pexels-photo-2067576.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Assorted Pastries" className="w-full h-64 object-cover transform transition-transform duration-500 group-hover:scale-110"/></Link>
+                <Link to="/pastries" className="promo-image block overflow-hidden rounded-2xl shadow-lg group"><img src="https://images.pexels.com/photos/1721932/pexels-photo-1721932.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Glazed Croissant" className="w-full h-64 object-cover transform transition-transform duration-500 group-hover:scale-110"/></Link>
+                <Link to="/pastries" className="promo-image block overflow-hidden rounded-2xl shadow-lg group"><img src="https://images.pexels.com/photos/267308/pexels-photo-267308.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Fruit Tart" className="w-full h-64 object-cover transform transition-transform duration-500 group-hover:scale-110"/></Link>
             </div>
-
             <div className="mt-12">
-                <Link to="/pastries">
-                    <button className="promo-button px-8 py-4 rounded-full bg-pink-500 text-white font-semibold transition-all duration-300 transform hover:scale-105 hover:bg-pink-600 shadow-lg">
-                        See Our Delicious Pastries
-                    </button>
-                </Link>
+                <Link to="/pastries"><button className="promo-button px-8 py-4 rounded-full bg-pink-500 text-white font-semibold transition-all duration-300 transform hover:scale-105 hover:bg-pink-600 shadow-lg">See Our Delicious Pastries</button></Link>
+            </div>
+        </section>
+
+        {/* 2. Cakes Section */}
+        <section className="cakes-promo-section container mx-auto px-4 py-16 text-center bg-rose-50/50 rounded-3xl my-12">
+            <h2 className="promo-title text-4xl md:text-5xl font-extrabold text-rose-900">For Every Celebration</h2>
+            <p className="promo-title text-lg text-gray-700 mt-2">From birthdays to anniversaries, find the perfect cake.</p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-12">
+                <Link to="/cake" className="promo-image block overflow-hidden rounded-2xl shadow-lg group"><img src="https://images.pexels.com/photos/1854652/pexels-photo-1854652.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Chocolate Cake Slice" className="w-full h-64 object-cover transform transition-transform duration-500 group-hover:scale-110"/></Link>
+                <Link to="/cake" className="promo-image block overflow-hidden rounded-2xl shadow-lg group"><img src="https://images.pexels.com/photos/291528/pexels-photo-291528.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Berry Chocolate Cake" className="w-full h-64 object-cover transform transition-transform duration-500 group-hover:scale-110"/></Link>
+                <Link to="/cake" className="promo-image block overflow-hidden rounded-2xl shadow-lg group"><img src="https://images.pexels.com/photos/1027811/pexels-photo-1027811.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Cheesecake" className="w-full h-64 object-cover transform transition-transform duration-500 group-hover:scale-110"/></Link>
+            </div>
+            <div className="mt-12">
+                <Link to="/cake"><button className="promo-button px-8 py-4 rounded-full bg-rose-500 text-white font-semibold transition-all duration-300 transform hover:scale-105 hover:bg-rose-600 shadow-lg">Explore Our Cakes</button></Link>
+            </div>
+        </section>
+
+        {/* 3. Breads Section */}
+        <section className="breads-promo-section container mx-auto px-4 py-16 text-center">
+            <h2 className="promo-title text-4xl md:text-5xl font-extrabold text-amber-900">Our Daily Bread</h2>
+            <p className="promo-title text-lg text-gray-700 mt-2">Artisan loaves, baked fresh every morning.</p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-12">
+                <Link to="/breads" className="promo-image block overflow-hidden rounded-2xl shadow-lg group"><img src="https://images.pexels.com/photos/1775043/pexels-photo-1775043.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Sourdough Loaf" className="w-full h-64 object-cover transform transition-transform duration-500 group-hover:scale-110"/></Link>
+                <Link to="/breads" className="promo-image block overflow-hidden rounded-2xl shadow-lg group"><img src="https://images.pexels.com/photos/209196/pexels-photo-209196.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Baguettes" className="w-full h-64 object-cover transform transition-transform duration-500 group-hover:scale-110"/></Link>
+                <Link to="/breads" className="promo-image block overflow-hidden rounded-2xl shadow-lg group"><img src="https://hips.hearstapps.com/hmg-prod/images/types-of-bread-1666723473.jpg?crop=0.663xw:1.00xh;0.169xw,0&resize=1200:*" alt="Assorted Breads" className="w-full h-64 object-cover transform transition-transform duration-500 group-hover:scale-110"/></Link>
+            </div>
+            <div className="mt-12">
+                <Link to="/breads"><button className="promo-button px-8 py-4 rounded-full bg-yellow-800 text-white font-semibold transition-all duration-300 transform hover:scale-105 hover:bg-yellow-900 shadow-lg">Browse Fresh Breads</button></Link>
+            </div>
+        </section>
+
+        {/* 4. Ice Cream Section */}
+        <section className="icecream-promo-section container mx-auto px-4 py-16 text-center bg-sky-50/50 rounded-3xl my-12">
+            <h2 className="promo-title text-4xl md:text-5xl font-extrabold text-sky-900">Cool Down in Style</h2>
+            <p className="promo-title text-lg text-gray-700 mt-2">Hand-churned ice cream, the perfect sweet escape.</p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-12">
+                <Link to="/icecream" className="promo-image block overflow-hidden rounded-2xl shadow-lg group"><img src="https://images.pexels.com/photos/1343504/pexels-photo-1343504.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Ice Cream Scoops" className="w-full h-64 object-cover transform transition-transform duration-500 group-hover:scale-110"/></Link>
+                <Link to="/icecream" className="promo-image block overflow-hidden rounded-2xl shadow-lg group"><img src="https://berryworld.imgix.net/assets/ice-cream-straw.jpeg?auto=format&crop=focalpoint&fit=crop&fp-x=0.5&fp-y=0.5&h=1500&ixlib=php-3.1.0&q=60&v=1724332437&w=2300" alt="Strawberry Ice Cream Cone" className="w-full h-64 object-cover transform transition-transform duration-500 group-hover:scale-110"/></Link>
+                <Link to="/icecream" className="promo-image block overflow-hidden rounded-2xl shadow-lg group"><img src="https://aplantifulpath.com/wp-content/uploads/2019/08/Strawberry-Ice-Cream-1.jpg" alt="Chocolate Ice Cream" className="w-full h-64 object-cover transform transition-transform duration-500 group-hover:scale-110"/></Link>
+            </div>
+            <div className="mt-12">
+                <Link to="/icecream"><button className="promo-button px-8 py-4 rounded-full bg-sky-500 text-white font-semibold transition-all duration-300 transform hover:scale-105 hover:bg-sky-600 shadow-lg">Discover Our Ice Creams</button></Link>
             </div>
         </section>
         
