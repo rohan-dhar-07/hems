@@ -23,6 +23,32 @@ import WishlistPage from './pages/WishlistPage';
 const App = () => {
   const [wishlistItems, setWishlistItems] = useState([]);
 
+  // --- START OF FIX ---
+
+  // 1. State to hold the items in the shopping cart.
+  // The format is { productId: quantity, productId_2: quantity_2 }
+  const [cartItems, setCartItems] = useState({});
+
+  // 2. Function to handle adding/updating items in the cart.
+  // This function will be passed down to the BakeryOrderPage.
+  const handleUpdateCart = (productId, quantity) => {
+    setCartItems(prevItems => {
+      const newItems = { ...prevItems };
+      const currentQuantity = newItems[productId] || 0;
+      const newQuantity = currentQuantity + quantity;
+
+      if (newQuantity <= 0) {
+        delete newItems[productId]; // Remove item if quantity becomes 0
+      } else {
+        newItems[productId] = newQuantity;
+      }
+      
+      return newItems;
+    });
+  };
+
+  // --- END OF FIX ---
+
   const handleToggleWishlist = (product) => {
     setWishlistItems(prevItems => {
       const isWishlisted = prevItems.some(item => item.id === product.id);
@@ -47,17 +73,19 @@ const App = () => {
               <BakeryOrderPage 
                 wishlistItems={wishlistItems} 
                 onToggleWishlist={handleToggleWishlist} 
+                // 3. Pass the cart state and update function as props
+                cartItems={cartItems}
+                onUpdateCart={handleUpdateCart}
               />
             } 
           />
 
-          {/* --- CHANGE: Pass the handler function instead of the raw setter --- */}
           <Route 
             path='/wishlist' 
             element={
               <WishlistPage 
                 wishlistItems={wishlistItems} 
-                onToggleWishlist={handleToggleWishlist} // This is more consistent and safer
+                onToggleWishlist={handleToggleWishlist}
               />
             } 
           />

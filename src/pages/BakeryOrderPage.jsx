@@ -7,6 +7,8 @@ import { Link } from 'react-router-dom';
 import BottomSection from '../components/projects/BottomSection';
 import MiddleContent from '../components/projects/MiddleContent';
 import TopBar from '../components/projects/TopBar';
+import PromoBanner from '../components/projects/PromoBanner';
+import CategoryLinks from '../components/projects/CategoryLinks'; // <-- 1. IMPORT THE NEW SECTION
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -21,7 +23,7 @@ const BakeryOrderPage = ({ wishlistItems, onToggleWishlist, cartItems, onUpdateC
       { id: 3, name: "Classic Parisian Croissant", price: 199.00, description: "Buttery, flaky, and baked to perfection.", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzqVN1SZJuMBXn2S5Z1NzXHvC0Ua2ipZKj_w&s" },
       { id: 4, name: "Homestyle Apple Pie", price: 999.00, description: "Sweet apples and cinnamon in a golden crust.", image: "https://www.simplyrecipes.com/thmb/SeOrwAcn5dAuazvh-AhlrDbAd24=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Simply-Recipes-Homemade-Apple-Pie-LEAD-04-11db861782aa4ebdb5ef9948125ef0ef.jpg" },
       { id: 5, name: "Celebration Cupcakes", price: 599.00, description: "A delightful pack of four assorted cupcakes.", image: "https://images.unsplash.com/photo-1614707267537-b85aaf00c4b7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80" },
-      { id: 6, name: "Artisan Sourdough Loaf", price: 349.00, description: "Freshly baked with a perfectly crisp crust.", image: "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" }
+      { id: 6, name: "Artisan Sourdough Loaf", price: 349.00, description: "Freshly baked with a perfectly crisp crust.", image: "https://images.unsplash.com/photo-1549931319-a_545dcf3bc73?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" }
   ];
 
   const handleCartAndUpdateFlyingItem = (productId, quantity, e) => {
@@ -41,9 +43,7 @@ const BakeryOrderPage = ({ wishlistItems, onToggleWishlist, cartItems, onUpdateC
   };
 
   useGSAP(() => {
-    // --- ORIGINAL ANIMATIONS (RESTORED) ---
     gsap.from(".hero-text", { y: 100, opacity: 0, duration: 1, stagger: 0.2, ease: "power3.out" });
-    
     gsap.utils.toArray('.product-card').forEach(card => {
         gsap.from(card, {
           scrollTrigger: { trigger: card, start: "top 85%", toggleActions: "play none none none" },
@@ -54,27 +54,45 @@ const BakeryOrderPage = ({ wishlistItems, onToggleWishlist, cartItems, onUpdateC
           scrollTrigger: { trigger: card, scrub: true, start: "top bottom", end: "bottom top" },
         });
     });
-
-    // --- NEW PROMO SECTION ANIMATIONS ---
     const createPromoAnimation = (selector) => {
       gsap.from(`${selector} .promo-title`, { scrollTrigger: { trigger: selector, start: "top 80%" }, opacity: 0, y: 50, duration: 0.8, ease: 'power3.out' });
       gsap.from(`${selector} .promo-image`, { scrollTrigger: { trigger: selector, start: "top 75%" }, opacity: 0, y: 50, scale: 0.9, stagger: 0.2, duration: 0.7, ease: 'power2.out' });
       gsap.from(`${selector} .promo-button`, { scrollTrigger: { trigger: selector, start: "top 70%" }, opacity: 0, scale: 0.5, duration: 0.8, ease: 'back.out(1.7)' });
     };
-
     createPromoAnimation(".pastries-promo-section");
     createPromoAnimation(".cakes-promo-section");
     createPromoAnimation(".breads-promo-section");
     createPromoAnimation(".icecream-promo-section");
-
   }, { scope: container });
+
+  useGSAP(() => {
+    if (flyingItem) {
+      gsap.to('.flying-item', {
+        x: flyingItem.endX - flyingItem.startX,
+        y: flyingItem.endY - flyingItem.startY,
+        scale: 0.2,
+        opacity: 0.7,
+        duration: 0.8,
+        ease: 'power1.in',
+        onComplete: () => {
+          gsap.fromTo(cartRef.current, 
+            { scale: 1.5 }, 
+            { scale: 1, duration: 0.3, ease: 'back.out(1.7)' }
+          );
+          setFlyingItem(null);
+        }
+      });
+    }
+  }, [flyingItem]);
 
   const totalCartItems = cartItems ? Object.values(cartItems).reduce((total, quantity) => total + quantity, 0) : 0;
 
   return (
     <div ref={container} className="relative min-h-screen font-[sans-serif] pb-24 bg-fixed bg-cover bg-center" style={{ backgroundImage: `url('/logo/image44.webp')` }}>
       <div className="absolute inset-0 bg-white opacity-60 pointer-events-none z-0"></div> 
-      <div className="relative z-10">
+      <div className="relative z-10 pt-20"> 
+        <PromoBanner />
+        <CategoryLinks /> {/* <-- 2. ADD THE NEW SECTION COMPONENT HERE */}
         <TopBar totalCartItems={totalCartItems} ref={cartRef} />
         {flyingItem && ( <img src={flyingItem.src} className="flying-item fixed block w-12 h-12 rounded-full z-[100] object-cover" alt="product" style={{ left: flyingItem.startX, top: flyingItem.startY }} /> )}
         
