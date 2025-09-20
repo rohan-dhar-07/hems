@@ -24,24 +24,19 @@ const allCakeProducts = [
   { id: 12, name: "Black Forest Classic", price: 1399.00, description: "Layers of chocolate, cherries, and whipped cream.", image: "https://www.fnp.com/images/pr/m/v20250701155846/choco-truffle-birthday-cake.jpg" },
 ];
 
-const CakesPage = () => {
+// Destructure the props that are passed down from App.jsx
+const CakesPage = ({ wishlistItems, onToggleWishlist }) => {
   const [sortOrder, setSortOrder] = useState('lowToHigh');
-  const [wishlistItems, setWishlistItems] = useState([]);
+  // Removed local state: const [wishlistItems, setWishlistItems] = useState([]);
   const container = useRef(null);
   const preloaderRef = useRef(null);
   const cakeGridRef = useRef(null);
 
+  // Use the onToggleWishlist prop directly
   const handleAddToWishlist = (product, e) => {
     e.preventDefault();
     e.stopPropagation();
-    setWishlistItems(prev => {
-      const isPresent = prev.some(item => item.id === product.id);
-      if (isPresent) {
-        return prev.filter(item => item.id !== product.id);
-      } else {
-        return [...prev, product];
-      }
-    });
+    onToggleWishlist(product);
   };
 
   const handleAddToCart = (product, e) => {
@@ -189,7 +184,8 @@ const CakesPage = () => {
           </div>
           <div ref={cakeGridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {sortedProducts.map(product => {
-                const isWished = wishlistItems.some(item => item.id === product.id);
+                // Check if the product is in the wishlist based on the prop
+                const isWished = wishlistItems?.some(item => item.id === product.id);
                 return (
                   <div key={product.id} className="cake-card bg-white/5 border border-white/10 p-6 rounded-2xl shadow-xl backdrop-blur-sm transition-transform duration-300 hover:scale-105 hover:shadow-2xl hover:border-[#ffcc00]">
                     <Link to={`/product/${product.id}`} className="block">
