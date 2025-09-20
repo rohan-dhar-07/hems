@@ -26,12 +26,24 @@ const allCakeProducts = [
 
 const CakesPage = () => {
   const [sortOrder, setSortOrder] = useState('lowToHigh');
+  const [wishlistItems, setWishlistItems] = useState([]);
   const container = useRef(null);
   const preloaderRef = useRef(null);
   const cakeGridRef = useRef(null);
 
-  // You can keep the handleAddToCart function if you move the cart logic to a context or a higher-level component.
-  // For now, I've simplified it since Cart component is removed.
+  const handleAddToWishlist = (product, e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setWishlistItems(prev => {
+      const isPresent = prev.some(item => item.id === product.id);
+      if (isPresent) {
+        return prev.filter(item => item.id !== product.id);
+      } else {
+        return [...prev, product];
+      }
+    });
+  };
+
   const handleAddToCart = (product, e) => {
     e.preventDefault(); 
     e.stopPropagation();
@@ -105,8 +117,7 @@ const CakesPage = () => {
           {[...Array(5)].map((_,i) => <div key={i} className="preloader-panel w-1/5 h-full bg-[#1b0724]"/>)}
       </div>
       
-      {/* Render the Topbar component */}
-      <Topbar />
+      <Topbar /> 
 
       {/* Hero Section */}
       <section className="h-screen flex justify-center items-center text-center bg-gradient-to-br from-[#1b0724] to-[#3a0c4f] relative z-10">
@@ -177,21 +188,27 @@ const CakesPage = () => {
             </div>
           </div>
           <div ref={cakeGridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {sortedProducts.map(product => (
-              <div key={product.id} className="cake-card bg-white/5 border border-white/10 p-6 rounded-2xl shadow-xl backdrop-blur-sm transition-transform duration-300 hover:scale-105 hover:shadow-2xl hover:border-[#ffcc00]">
-                <Link to={`/product/${product.id}`} className="block">
-                  <div className="overflow-hidden rounded-xl mb-4 relative group">
-                    <img src={product.image} alt={product.name} className="cake-image-in-card w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"/>
+            {sortedProducts.map(product => {
+                const isWished = wishlistItems.some(item => item.id === product.id);
+                return (
+                  <div key={product.id} className="cake-card bg-white/5 border border-white/10 p-6 rounded-2xl shadow-xl backdrop-blur-sm transition-transform duration-300 hover:scale-105 hover:shadow-2xl hover:border-[#ffcc00]">
+                    <Link to={`/product/${product.id}`} className="block">
+                      <div className="overflow-hidden rounded-xl mb-4 relative group">
+                        <img src={product.image} alt={product.name} className="cake-image-in-card w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"/>
+                      </div>
+                      <h3 className="text-xl font-bold text-gray-100 font-['font1']">{product.name}</h3>
+                      <p className="text-sm text-gray-400 mt-1 mb-3">{product.description}</p>
+                      <span className="text-2xl font-bold text-[#ffcc00]">₹{product.price.toFixed(2)}</span>
+                    </Link>
+                    <div className="flex justify-between items-center mt-4">
+                      <button onClick={(e) => handleAddToWishlist(product, e)} className={`text-2xl transition-all duration-300 transform hover:scale-125 ${isWished ? 'text-rose-500' : 'text-gray-300'}`}>
+                        ❤️
+                      </button>
+                      <button onClick={(e) => handleAddToCart(product, e)} className="bg-[#ffcc00] hover:bg-[#e6b800] text-[#2a0a3a] font-bold py-2 px-6 rounded-full shadow-lg transition-all duration-300">Add to Cart</button>
+                    </div>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-100 font-['font1']">{product.name}</h3>
-                  <p className="text-sm text-gray-400 mt-1 mb-3">{product.description}</p>
-                  <span className="text-2xl font-bold text-[#ffcc00]">₹{product.price.toFixed(2)}</span>
-                </Link>
-                <div className="flex justify-between items-center mt-4">
-                  <button onClick={(e) => handleAddToCart(product, e)} className="bg-[#ffcc00] hover:bg-[#e6b800] text-[#2a0a3a] font-bold py-2 px-6 rounded-full shadow-lg transition-all duration-300">Add to Cart</button>
-                </div>
-              </div>
-            ))}
+                );
+            })}
           </div>
         </div>
       </section>

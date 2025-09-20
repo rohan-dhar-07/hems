@@ -94,12 +94,23 @@ const App = () => {
           <Route path='/about' element={<AboutPage />} />
           <Route path='/gift' element={<GiftingPage />} />
           <Route path='/custom' element={<CustomOrderPage />} />
-          <Route path='/cake' element={<CakesPage/>} />
+          
+          {/* Update the CakesPage route to pass wishlist props */}
+          <Route 
+            path='/cake' 
+            element={
+              <CakesPage 
+                wishlistItems={wishlistItems} 
+                onToggleWishlist={handleToggleWishlist} 
+              />
+            } 
+          />
+          
           <Route path='/pastries' element={<PastriesPage/>} />
           <Route path='/breads' element={<BreadsPage/>} />
           <Route path='/icecream' element={<IceCreamPage/>} />
           <Route path='/checkout' element={<CheckoutPage />}/>
-          <Route path='/auth' element={<Auth />}/>
+          <Route path='/auth' element={<Auth />}/>    
           <Route path='/profilepage' element={<ProfilePage />} />
         </Routes>
       </Stairs>
