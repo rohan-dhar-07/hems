@@ -3,7 +3,7 @@
   import { useGSAP } from '@gsap/react';
   import gsap from 'gsap';
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
-  import Topbar from '../components/projects/Topbar'; 
+  import TopBar from '../components/projects/TopBar'; 
   import BottomSection from '../components/projects/BottomSection'; 
   import Navbar from '../components/home/Navbar';
   import Cart from '../components/home/Cart';
@@ -141,7 +141,7 @@
             {[...Array(5)].map((_,i) => <div key={i} className="preloader-panel w-1/5 h-full bg-[#1b0724]"/>)}
         </div>
         
-        <Topbar />
+        <TopBar />
         <Navbar />
         <Cart ref={cartRef} cartItems={cartItems} onIncrease={increaseQuantity} onDecrease={decreaseQuantity} />
         {flyingItem && <img src={flyingItem.src} className="flying-item fixed w-24 h-24 object-cover rounded-full z-[999] pointer-events-none" alt="" />}
