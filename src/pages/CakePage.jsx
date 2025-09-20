@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import Topbar from '../components/projects/Topbar'; 
+import TopBar from '../components/projects/TopBar'; 
 import BottomSection from '../components/projects/BottomSection'; 
 
 // Register GSAP plugins
@@ -112,7 +112,7 @@ const CakesPage = ({ wishlistItems, onToggleWishlist }) => {
           {[...Array(5)].map((_,i) => <div key={i} className="preloader-panel w-1/5 h-full bg-[#1b0724]"/>)}
       </div>
       
-      <Topbar /> 
+      <TopBar /> 
 
       {/* Hero Section */}
       <section className="h-screen flex justify-center items-center text-center bg-gradient-to-br from-[#1b0724] to-[#3a0c4f] relative z-10">
