@@ -5,11 +5,12 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/pagination';
-import 'swiper/css/navigation';
+// REMOVED: 'swiper/css/navigation';
 import 'swiper/css/autoplay';
 
 // import required modules
-import { Pagination, Navigation, Autoplay } from 'swiper/modules';
+// REMOVED: Navigation from modules
+import { Pagination, Autoplay } from 'swiper/modules';
 import { Link } from 'react-router-dom';
 
 const PromoBanner = () => {
@@ -40,7 +41,8 @@ const PromoBanner = () => {
   return (
     <div className="container mx-auto p-4">
       <Swiper
-        modules={[Pagination, Navigation, Autoplay]}
+        // REMOVED: Navigation module
+        modules={[Pagination, Autoplay]}
         spaceBetween={30}
         centeredSlides={true}
         autoplay={{
@@ -50,7 +52,8 @@ const PromoBanner = () => {
         pagination={{
           clickable: true,
         }}
-        navigation={true}
+        // REMOVED: The navigation prop to hide the arrows
+        // navigation={true}
         loop={true}
         className="mySwiper rounded-2xl"
       >
