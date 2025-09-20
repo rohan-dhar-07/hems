@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -8,7 +8,7 @@ import BottomSection from '../components/projects/BottomSection';
 import MiddleContent from '../components/projects/MiddleContent';
 import TopBar from '../components/projects/TopBar';
 import PromoBanner from '../components/projects/PromoBanner';
-import CategoryLinks from '../components/projects/CategoryLinks'; // <-- 1. IMPORT THE NEW SECTION
+import CategoryLinks from '../components/projects/CategoryLinks';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -16,6 +16,52 @@ const BakeryOrderPage = ({ wishlistItems, onToggleWishlist, cartItems, onUpdateC
   const [flyingItem, setFlyingItem] = useState(null);
   const container = useRef(null);
   const cartRef = useRef(null);
+  
+  // --- AUDIO LOGIC START ---
+  const audioRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  // This effect runs once to try and autoplay the music.
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    // Attempt to play music. This returns a promise.
+    const playPromise = audio.play();
+
+    if (playPromise !== undefined) {
+      playPromise.then(_ => {
+        // Autoplay started successfully!
+        setIsPlaying(true);
+      })
+      .catch(error => {
+        // Autoplay was prevented by the browser.
+        // We'll wait for the user to click the play button.
+        console.warn("Background music autoplay was prevented by the browser.", error);
+        setIsPlaying(false);
+      });
+    }
+
+    // Cleanup: pause the music if the user navigates away.
+    return () => {
+        if(audio) {
+            audio.pause();
+        }
+    };
+  }, []); // The empty array [] means this effect runs only once when the component mounts.
+
+  // This function is called when the user clicks the play/pause button.
+  const toggleMusic = () => {
+    const audio = audioRef.current;
+    if (isPlaying) {
+      audio.pause();
+    } else {
+      audio.play();
+    }
+    setIsPlaying(!isPlaying);
+  };
+  // --- AUDIO LOGIC END ---
+
 
   const bakeryProducts = [
       { id: 1, name: "Chocolate Decadence", price: 1499.00, description: "Rich chocolate cake with a molten core.", image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1089&q=80" },
@@ -89,10 +135,25 @@ const BakeryOrderPage = ({ wishlistItems, onToggleWishlist, cartItems, onUpdateC
 
   return (
     <div ref={container} className="relative min-h-screen font-[sans-serif] pb-24 bg-fixed bg-cover bg-center" style={{ backgroundImage: `url('/logo/image44.webp')` }}>
+      
+      {/* --- AUDIO PLAYER & CONTROLS ADDED HERE --- */}
+      <audio ref={audioRef} src="/tumpa.mp3" loop />
+      <button
+          onClick={toggleMusic}
+          className="fixed bottom-24 right-4 z-50 p-3 bg-pink-600 text-white rounded-full shadow-lg hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 transition-transform hover:scale-110 active:scale-95"
+          aria-label={isPlaying ? "Pause music" : "Play music"}
+      >
+          {isPlaying ? (
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+          ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          )}
+      </button>
+
       <div className="absolute inset-0 bg-white opacity-60 pointer-events-none z-0"></div> 
       <div className="relative z-10 pt-20"> 
         <PromoBanner />
-        <CategoryLinks /> {/* <-- 2. ADD THE NEW SECTION COMPONENT HERE */}
+        <CategoryLinks />
         <TopBar totalCartItems={totalCartItems} ref={cartRef} />
         {flyingItem && ( <img src={flyingItem.src} className="flying-item fixed block w-12 h-12 rounded-full z-[100] object-cover" alt="product" style={{ left: flyingItem.startX, top: flyingItem.startY }} /> )}
         
