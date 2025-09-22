@@ -62,7 +62,7 @@ const App = () => {
 
   return (
     <div className='text-white'>
-      <Stairs>
+        
         <Routes>
           <Route path='/' element={<Home />} />
           {/* ... other routes ... */}
@@ -113,7 +113,7 @@ const App = () => {
           <Route path='/auth' element={<Auth />}/>    
           <Route path='/profilepage' element={<ProfilePage />} />
         </Routes>
-      </Stairs>
+      
     </div>
   );
 };
