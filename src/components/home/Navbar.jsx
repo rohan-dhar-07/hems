@@ -89,6 +89,10 @@ const Navbar = () => {
           <Link to="/contact" onClick={toggleMenu}>
             <MenuLink>Contact</MenuLink>
           </Link>
+          {/* Added Admin Panel Link */}
+          <Link to="/adminpanel" onClick={toggleMenu}>
+            <MenuLink>Admin Panel</MenuLink>
+          </Link>
         </ul>
       </div>
 
@@ -109,4 +113,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-

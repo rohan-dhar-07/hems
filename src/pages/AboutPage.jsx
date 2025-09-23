@@ -65,7 +65,7 @@ const AboutPage = () => {
       <section className="relative h-screen flex justify-center items-center text-center text-white overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full -z-10">
           <video
-            src="https://assets.mixkit.co/videos/preview/mixkit-pastries-with-icing-sugar-on-a-black-table-4235-large.mp4"
+            src="/intro2.mp4" // <-- CORRECTED PATH
             className="w-full h-full object-cover"
             autoPlay loop muted playsInline
           />
@@ -87,7 +87,7 @@ const AboutPage = () => {
       <section className="story-section bg-white py-16 md:py-24">
         <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div className="story-image rounded-2xl overflow-hidden shadow-lg">
-            <img src="https://images.unsplash.com/photo-1555507036-ab794f24d8c7?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Inside the HEMS Bakery kitchen" className="w-full h-full object-cover" />
+            <img src="https://www.thestatesman.com/wp-content/uploads/2022/09/03_Merged.jpg" alt="Inside the HEMS Bakery kitchen" className="w-full h-full object-cover" />
           </div>
           <div className="story-content text-center md:text-left">
             <h2 className="text-4xl font-bold mb-6">Our Journey of Flavor</h2>
@@ -124,13 +124,13 @@ const AboutPage = () => {
             <h2 className="text-4xl font-bold mb-12">Meet the Founders</h2>
             <div className="flex flex-wrap justify-center gap-12">
                 <div className="founder-card text-center max-w-xs">
-                    <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1961&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Founder Jane Doe" className="w-40 h-40 rounded-full mx-auto mb-4 object-cover shadow-lg" />
+                    <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1961&auto=format&fit=crop&ixlib.rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Founder Jane Doe" className="w-40 h-40 rounded-full mx-auto mb-4 object-cover shadow-lg" />
                     <h3 className="text-2xl font-bold">Jane Doe</h3>
                     <p className="text-rose-500">Head Pâtissier</p>
                     <p className="mt-2 text-gray-600">The creative force behind our most beloved pastries and cakes.</p>
                 </div>
                 <div className="founder-card text-center max-w-xs">
-                    <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Founder John Smith" className="w-40 h-40 rounded-full mx-auto mb-4 object-cover shadow-lg" />
+                    <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1974&auto=format&fit=crop&ixlib.rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Founder John Smith" className="w-40 h-40 rounded-full mx-auto mb-4 object-cover shadow-lg" />
                     <h3 className="text-2xl font-bold">John Smith</h3>
                     <p className="text-rose-500">Master Baker</p>
                     <p className="mt-2 text-gray-600">The heart of our bakery, ensuring every loaf of bread is perfect.</p>
@@ -142,7 +142,7 @@ const AboutPage = () => {
       {/* --- Call to Action Section --- */}
       <section className="cta-section relative py-20 md:py-32 text-center text-white overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full">
-            <img src="https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="A spread of delicious bakery items" className="cta-bg w-full h-full object-cover"/>
+            <img src="https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?q=80&w=1974&auto=format&fit=crop&ixlib.rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="A spread of delicious bakery items" className="cta-bg w-full h-full object-cover"/>
             <div className="absolute inset-0 bg-black/50"></div>
         </div>
         <div className="container mx-auto px-4 relative z-10 cta-content">
@@ -160,4 +160,3 @@ const AboutPage = () => {
 };
 
 export default AboutPage;
-

@@ -20,6 +20,12 @@ import Auth from './components/Auth';
 import ProfilePage from './pages/ProfilePage';
 import WishlistPage from './pages/WishlistPage';
 
+// Import the new Register and Login components
+import Register from './pages/Register';
+import Login from './pages/Login';
+import Profile from './pages/Profile';
+import AdminPanel from './components/AdminPanel';
+
 const App = () => {
   const [wishlistItems, setWishlistItems] = useState([]);
 
@@ -112,6 +118,10 @@ const App = () => {
           <Route path='/checkout' element={<CheckoutPage />}/>
           <Route path='/auth' element={<Auth />}/>    
           <Route path='/profilepage' element={<ProfilePage />} />
+          <Route path='/register' element={<Register />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/profile' element={<Profile />} />
+          <Route path='/adminpanel' element={<AdminPanel />} />
         </Routes>
       
     </div>
