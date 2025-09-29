@@ -124,11 +124,9 @@ const TopBar = forwardRef(({ totalCartItems }, ref) => {
           </button>
 
           {/* Cart Icon */}
-          {/* --- CHANGE: Using the forwarded ref here --- */}
           <Link to="/cart" ref={ref} className="relative p-2 rounded-full hover:bg-pink-100 transition-colors" aria-label="Cart">
-            <svg className="h-5 w-5 text-pink-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-            </svg>
+            {/* --- MODIFIED: Replaced the SVG with an <img> tag for your new logo --- */}
+            <img src="/new-cart-icon.png" alt="Cart" className="h-6 w-6" />
             {totalCartItems > 0 && (
               <span className="absolute -top-1 -right-1 block h-5 w-5 rounded-full bg-pink-500 text-white text-xs flex items-center justify-center font-bold">
                 {totalCartItems}
