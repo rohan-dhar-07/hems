@@ -210,6 +210,7 @@ const ProductManagement = () => (
                         <th className="p-4 font-semibold">Stock</th>
                         <th className="p-4 font-semibold">Selling Price</th>
                         <th className="p-4 font-semibold">Production Cost</th>
+                        <th className="p-4 font-semibold">Expiry Date</th>
                         <th className="p-4 font-semibold">Status</th>
                         <th className="p-4 font-semibold">Actions</th>
                     </tr>

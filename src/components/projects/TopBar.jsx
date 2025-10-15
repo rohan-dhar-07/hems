@@ -71,7 +71,7 @@ const TopBar = forwardRef(({ totalCartItems }, ref) => {
           </button>
         
           <Link to="/" className="flex items-center">
-            <img src="/logo/image33.jpeg" alt="HEMS Bakery Logo" className="h-12 w-auto" />
+            <img src="/logo/image33.png" alt="HEMS Bakery Logo" className="h-12 w-auto" />
           </Link>
         </div>
 
