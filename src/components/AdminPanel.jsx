@@ -1,36 +1,91 @@
 import React, { useState } from 'react';
-import { Search, Bell, ChevronDown, Home, ShoppingBag, Package, Users, BarChart2, PlusCircle, MoreVertical, ChevronLeft, ChevronRight } from 'lucide-react';
+import { 
+    Search, Bell, ChevronDown, Home, ShoppingBag, Package, Users, BarChart2, PlusCircle, MoreVertical, 
+    ClipboardList, Trash2, CookingPot, UserPlus, TrendingUp, DollarSign, AlertCircle, Clock, CheckCircle, XCircle, RefreshCw, Sprout
+} from 'lucide-react';
 
-// --- MOCK DATA ---
-// In a real application, this data would come from an API
-const mockStats = {
-    totalRevenue: { value: '₹5,42,320', change: '+2.5%' },
-    totalSales: { value: '1,234', change: '+5.1%' },
-    newCustomers: { value: '82', change: '-1.2%' },
-    totalOrders: { value: '432', change: '+1.5%' },
+// --- MOCK DATA (EXPANDED BASED ON REQUIREMENTS) ---
+
+// 1. Dashboard Data
+const mockTodaysStats = {
+    salesRevenue: { value: '₹12,550', change: '+15.2%' },
+    totalOrders: { value: '48', change: '+8%' },
+    averageOrderValue: { value: '₹261.45', change: '+7.1%' },
+    wastageCount: { value: '7 items', change: 'N/A' },
 };
 
-const mockProducts = [
-    { id: 1, name: 'Artisan Sourdough', stock: 25, price: '₹350', status: 'In Stock', image: 'https://placehold.co/400x400/F5C7A9/FFF?text=Sourdough' },
-    { id: 2, name: 'Chocolate Croissant', stock: 150, price: '₹120', status: 'In Stock', image: 'https://placehold.co/400x400/BF8B67/FFF?text=Croissant' },
-    { id: 3, name: 'Red Velvet Cupcake', stock: 0, price: '₹90', status: 'Out of Stock', image: 'https://placehold.co/400x400/D9534F/FFF?text=Cupcake' },
-    { id: 4, name: 'Custom Wedding Cake', stock: 5, price: '₹4,500', status: 'Low Stock', image: 'https://placehold.co/400x400/EAD5DC/FFF?text=Cake' },
-    { id: 5, name: 'Assorted Donuts Box', stock: 45, price: '₹600', status: 'In Stock', image: 'https://placehold.co/400x400/FFDAB9/FFF?text=Donuts' },
+const mockTopSellers = [
+    { name: 'Chocolate Croissant', sold: 35 },
+    { name: 'Artisan Sourdough', sold: 22 },
+    { name: 'Red Velvet Cupcake', sold: 18 },
 ];
 
+const mockLowStockAlerts = [
+    { name: 'Dark Chocolate Chips', current: '2.5 kg', threshold: '5 kg' },
+    { name: 'Vanilla Extract', current: '0.8 L', threshold: '1 L' },
+    { name: '12-inch Cake Boxes', current: '15 units', threshold: '20 units' },
+];
+
+const mockUpcomingOrders = [
+    { id: 'ORD088', customer: 'Anjali Desai', due: 'Today, 4:00 PM', item: 'Custom Birthday Cake' },
+    { id: 'ORD091', customer: 'Corporate Events Inc.', due: 'Tomorrow, 9:00 AM', item: '150 Assorted Pastries' },
+];
+
+// 2. Sales & Order Data
 const mockOrders = [
-    { id: 'ORD001', customer: 'Rohan Sharma', date: '2025-09-23', total: '₹2,500', status: 'Shipped' },
-    { id: 'ORD002', customer: 'Priya Patel', date: '2025-09-23', total: '₹450', status: 'Processing' },
-    { id: 'ORD003', customer: 'Amit Singh', date: '2025-09-22', total: '₹1,200', status: 'Delivered' },
-    { id: 'ORD004', customer: 'Sneha Verma', date: '2025-09-21', total: '₹8,500', status: 'Delivered' },
-    { id: 'ORD005', customer: 'Vikram Reddy', date: '2025-09-20', total: '₹180', status: 'Cancelled' },
+    { id: 'ORD088', customer: 'Anjali Desai', date: '2025-10-14', total: '₹3,500', status: 'In Production', type: 'Custom Cake', paymentMethod: 'UPI', paymentStatus: 'Paid' },
+    { id: 'ORD087', customer: 'Rohan Sharma', date: '2025-10-14', total: '₹2,500', status: 'Ready for Pickup', type: 'Online', paymentMethod: 'Credit Card', paymentStatus: 'Paid' },
+    { id: 'ORD086', customer: 'Priya Patel', date: '2025-10-14', total: '₹450', status: 'Completed', type: 'In-Store', paymentMethod: 'Cash', paymentStatus: 'Paid' },
+    { id: 'ORD085', customer: 'Amit Singh', date: '2025-10-13', total: '₹1,200', status: 'Completed', type: 'Phone-in', paymentMethod: 'Credit Card', paymentStatus: 'Paid' },
+    { id: 'ORD084', customer: 'Sneha Verma', date: '2025-10-13', total: '₹8,500', status: 'Completed', type: 'Wholesale', paymentMethod: 'Bank Transfer', paymentStatus: 'Unpaid' },
+    { id: 'ORD083', customer: 'Vikram Reddy', date: '2025-10-12', total: '₹180', status: 'Cancelled', type: 'Online', paymentMethod: 'N/A', paymentStatus: 'N/A' },
 ];
 
+// 3. Inventory Data
+const mockIngredients = [
+    { id: 'ING001', name: 'All-Purpose Flour', sku: 'APF-1KG', supplier: 'GrainMasters Inc.', quantity: '55 kg', unit: 'kg', cost: '₹50/kg', threshold: '20 kg', expiry: '2026-03-01' },
+    { id: 'ING002', name: 'Caster Sugar', sku: 'CSG-1KG', supplier: 'SweetSupply Co.', quantity: '32 kg', unit: 'kg', cost: '₹65/kg', threshold: '15 kg', expiry: '2026-08-15' },
+    { id: 'ING003', name: 'Dark Chocolate Chips', sku: 'DCC-500G', supplier: 'ChocoWorld', quantity: '2.5 kg', unit: 'kg', cost: '₹800/kg', threshold: '5 kg', expiry: '2025-12-20' },
+    { id: 'ING004', name: 'Fresh Cream', sku: 'FRC-1L', supplier: 'DailyDairy', quantity: '8 L', unit: 'L', cost: '₹250/L', threshold: '5 L', expiry: '2025-10-18' },
+    { id: 'ING005', name: 'Vanilla Extract', sku: 'VNE-100ML', supplier: 'FlavourHouse', quantity: '0.8 L', unit: 'L', cost: '₹3000/L', threshold: '1 L', expiry: '2027-01-01' },
+];
+
+const mockProducts = [
+    { id: 1, name: 'Artisan Sourdough', sku: 'BRD-SD-01', category: 'Bread', stock: 25, price: '₹350', cost: '₹120.50', status: 'In Stock', image: 'https://placehold.co/400x400/F5C7A9/FFF?text=Sourdough' },
+    { id: 2, name: 'Chocolate Croissant', sku: 'PST-CC-01', category: 'Pastry', stock: 150, price: '₹120', cost: '₹45.75', status: 'In Stock', image: 'https://placehold.co/400x400/BF8B67/FFF?text=Croissant' },
+    { id: 3, name: 'Red Velvet Cupcake', sku: 'CKE-RV-01', category: 'Cake', stock: 0, price: '₹90', cost: '₹32.00', status: 'Out of Stock', image: 'https://placehold.co/400x400/D9534F/FFF?text=Cupcake' },
+    { id: 4, name: 'Custom Wedding Cake', sku: 'CKE-CW-01', category: 'Custom', stock: 5, price: '₹4,500', cost: '₹1850.00', status: 'Low Stock', image: 'https://placehold.co/400x400/EAD5DC/FFF?text=Cake' },
+    { id: 5, name: 'Assorted Donuts Box', sku: 'PST-DN-12', category: 'Pastry', stock: 45, price: '₹600', cost: '₹210.25', status: 'In Stock', image: 'https://placehold.co/400x400/FFDAB9/FFF?text=Donuts' },
+];
+
+// 4. Production Data
+const mockBakeSheet = [
+    { product: 'Chocolate Croissant', target: 200, actual: 200, baker: 'Ravi', status: 'Completed' },
+    { product: 'Artisan Sourdough', target: 50, actual: 50, baker: 'Sunita', status: 'Completed' },
+    { product: 'Red Velvet Cupcake', target: 100, actual: 100, baker: 'Ravi', status: 'Completed' },
+    { product: 'Baguette', target: 80, actual: 0, baker: 'Sunita', status: 'To-Do' },
+];
+
+const mockWastageLog = [
+    { product: 'Cinnamon Roll', quantity: 3, reason: 'Unsold', loggedBy: 'Manager' },
+    { product: 'Sourdough Loaf', quantity: 1, reason: 'Production Error', loggedBy: 'Sunita' },
+    { product: 'Milk', quantity: '2L', reason: 'Expired', loggedBy: 'Manager' },
+];
+
+// 5. Customer Data
 const mockCustomers = [
-    { id: 'CUST01', name: 'Rohan Sharma', email: 'rohan.sharma@example.com', spent: '₹12,500' },
-    { id: 'CUST02', name: 'Priya Patel', email: 'priya.patel@example.com', spent: '₹8,200' },
-    { id: 'CUST03', name: 'Amit Singh', email: 'amit.singh@example.com', spent: '₹21,300' },
-    { id: 'CUST04', name: 'Sneha Verma', email: 'sneha.verma@example.com', spent: '₹9,800' },
+    { id: 'CUST01', name: 'Rohan Sharma', email: 'rohan.sharma@example.com', spent: '₹12,500', loyaltyPoints: 125, notes: 'Prefers whole wheat' },
+    { id: 'CUST02', name: 'Priya Patel', email: 'priya.patel@example.com', spent: '₹8,200', loyaltyPoints: 82, notes: 'Allergy: Peanuts' },
+    { id: 'CUST03', name: 'Amit Singh', email: 'amit.singh@example.com', spent: '₹21,300', loyaltyPoints: 213, notes: 'Birthday: Nov 15' },
+    { id: 'CUST04', name: 'Sneha Verma', email: 'sneha.verma@example.com', spent: '₹9,800', loyaltyPoints: 98, notes: 'Wholesale client' },
+];
+
+// 6. Employee Data
+const mockEmployees = [
+    { id: 'EMP01', name: 'Sunita Gupta', role: 'Head Baker', status: 'Active' },
+    { id: 'EMP02', name: 'Ravi Kumar', role: 'Baker', status: 'Active' },
+    { id: 'EMP03', name: 'Meera Iyer', role: 'Cashier', status: 'On Leave' },
+    { id: 'EMP04', name: 'Rajesh Shah', role: 'Manager', status: 'Active' },
 ];
 
 
@@ -40,21 +95,6 @@ const Card = ({ children, className = '' }) => (
     <div className={`bg-white rounded-xl shadow-md p-6 ${className}`}>
         {children}
     </div>
-);
-
-// --- DASHBOARD COMPONENTS ---
-
-const StatCard = ({ title, value, change, icon }) => (
-    <Card>
-        <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-gray-500">{title}</p>
-            {icon}
-        </div>
-        <div className="mt-4">
-            <h3 className="text-3xl font-bold text-gray-800">{value}</h3>
-            <p className={`text-sm ${change.startsWith('+') ? 'text-green-500' : 'text-red-500'}`}>{change}</p>
-        </div>
-    </Card>
 );
 
 const ChartPlaceholder = ({ title }) => (
@@ -67,24 +107,81 @@ const ChartPlaceholder = ({ title }) => (
     </Card>
 );
 
+// --- DASHBOARD COMPONENTS ---
+
+const StatCard = ({ title, value, change, icon }) => (
+    <Card>
+        <div className="flex items-center justify-between">
+            <p className="text-sm font-medium text-gray-500">{title}</p>
+            {icon}
+        </div>
+        <div className="mt-4">
+            <h3 className="text-3xl font-bold text-gray-800">{value}</h3>
+            {change !== 'N/A' && (
+                <p className={`text-sm ${change.startsWith('+') ? 'text-green-500' : 'text-red-500'}`}>{change}</p>
+            )}
+        </div>
+    </Card>
+);
+
 const Dashboard = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard title="Total Revenue" value={mockStats.totalRevenue.value} change={mockStats.totalRevenue.change} icon={<BarChart2 className="w-6 h-6 text-gray-400" />} />
-        <StatCard title="Total Sales" value={mockStats.totalSales.value} change={mockStats.totalSales.change} icon={<ShoppingBag className="w-6 h-6 text-gray-400" />} />
-        <StatCard title="New Customers" value={mockStats.newCustomers.value} change={mockStats.newCustomers.change} icon={<Users className="w-6 h-6 text-gray-400" />} />
-        <StatCard title="Total Orders" value={mockStats.totalOrders.value} change={mockStats.totalOrders.change} icon={<Package className="w-6 h-6 text-gray-400" />} />
-        
-        <div className="lg:col-span-2">
+        {/* Main Stats */}
+        <StatCard title="Today's Sales Revenue" value={mockTodaysStats.salesRevenue.value} change={mockTodaysStats.salesRevenue.change} icon={<DollarSign className="w-6 h-6 text-gray-400" />} />
+        <StatCard title="Total Orders Today" value={mockTodaysStats.totalOrders.value} change={mockTodaysStats.totalOrders.change} icon={<Package className="w-6 h-6 text-gray-400" />} />
+        <StatCard title="Average Order Value" value={mockTodaysStats.averageOrderValue.value} change={mockTodaysStats.averageOrderValue.change} icon={<TrendingUp className="w-6 h-6 text-gray-400" />} />
+        <StatCard title="Wastage Count (Today)" value={mockTodaysStats.wastageCount.value} change={mockTodaysStats.wastageCount.change} icon={<Trash2 className="w-6 h-6 text-gray-400" />} />
+
+        {/* Actionable Insights */}
+        <Card className="lg:col-span-2">
+            <h4 className="font-bold text-lg text-gray-700">🚨 Low Stock Alerts</h4>
+            <ul className="mt-4 space-y-3">
+                {mockLowStockAlerts.map(item => (
+                    <li key={item.name} className="flex justify-between items-center text-sm p-2 rounded-md bg-yellow-50">
+                        <span className="font-semibold text-yellow-800">{item.name}</span>
+                        <span className="text-yellow-600">
+                            {item.current} <span className="text-gray-400">/ {item.threshold}</span>
+                        </span>
+                    </li>
+                ))}
+            </ul>
+        </Card>
+
+        <Card className="lg:col-span-2">
+            <h4 className="font-bold text-lg text-gray-700">🎂 Upcoming Custom Orders</h4>
+             <ul className="mt-4 space-y-3">
+                {mockUpcomingOrders.map(order => (
+                    <li key={order.id} className="flex justify-between items-center text-sm p-2 rounded-md bg-blue-50">
+                        <div>
+                             <span className="font-semibold text-blue-800">{order.item}</span>
+                             <p className="text-xs text-blue-600">{order.customer} ({order.id})</p>
+                        </div>
+                        <span className="font-medium text-blue-700">{order.due}</span>
+                    </li>
+                ))}
+            </ul>
+        </Card>
+
+        {/* Chart Placeholders */}
+        <div className="lg:col-span-3">
             <ChartPlaceholder title="Revenue Over Time" />
         </div>
-        <div className="lg:col-span-2">
-            <ChartPlaceholder title="Sales by Category" />
-        </div>
+        <Card className="lg:col-span-1">
+             <h4 className="font-bold text-lg text-gray-700">⭐ Top Selling Products (Today)</h4>
+             <ul className="mt-4 space-y-4">
+                {mockTopSellers.map(item => (
+                    <li key={item.name} className="flex justify-between items-center text-sm">
+                        <span className="font-medium text-gray-700">{item.name}</span>
+                        <span className="font-bold text-gray-800 bg-gray-100 px-2 py-1 rounded">{item.sold} sold</span>
+                    </li>
+                ))}
+             </ul>
+        </Card>
     </div>
 );
 
 
-// --- PRODUCT MANAGEMENT COMPONENTS ---
+// --- PRODUCT & INVENTORY COMPONENTS ---
 
 const getStatusChipClass = (status) => {
     switch (status) {
@@ -98,7 +195,7 @@ const getStatusChipClass = (status) => {
 const ProductManagement = () => (
     <Card>
         <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-blue-800">Products</h2>
+            <h2 className="text-2xl font-bold text-blue-800">Finished Products</h2>
             <button className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-blue-600 transition-colors">
                 <PlusCircle size={20} />
                 Add Product
@@ -107,10 +204,12 @@ const ProductManagement = () => (
         <div className="overflow-x-auto">
             <table className="w-full text-left">
                 <thead>
-                    <tr className="bg-gray-50 border-b">
+                    <tr className="bg-gray-600 border-b">
                         <th className="p-4 font-semibold">Product</th>
+                        <th className="p-4 font-semibold">Category</th>
                         <th className="p-4 font-semibold">Stock</th>
-                        <th className="p-4 font-semibold">Price</th>
+                        <th className="p-4 font-semibold">Selling Price</th>
+                        <th className="p-4 font-semibold">Production Cost</th>
                         <th className="p-4 font-semibold">Status</th>
                         <th className="p-4 font-semibold">Actions</th>
                     </tr>
@@ -120,10 +219,15 @@ const ProductManagement = () => (
                         <tr key={product.id} className="border-b hover:bg-gray-50">
                             <td className="p-4 flex items-center gap-4">
                                 <img src={product.image} alt={product.name} className="w-12 h-12 rounded-md object-cover" />
-                                <span className="font-medium">{product.name}</span>
+                                <div>
+                                    <span className="font-medium">{product.name}</span>
+                                    <p className="text-xs text-gray-500 font-mono">{product.sku}</p>
+                                </div>
                             </td>
+                            <td className="p-4">{product.category}</td>
                             <td className="p-4">{product.stock}</td>
                             <td className="p-4">{product.price}</td>
+                            <td className="p-4">{product.cost}</td>
                             <td className="p-4">
                                 <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusChipClass(product.status)}`}>
                                     {product.status}
@@ -140,13 +244,73 @@ const ProductManagement = () => (
     </Card>
 );
 
+const IngredientManagement = () => (
+    <Card>
+        <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-green-800">Raw Materials / Ingredients</h2>
+            <button className="bg-green-500 text-white font-semibold py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-green-600 transition-colors">
+                <PlusCircle size={20} />
+                Add Ingredient
+            </button>
+        </div>
+        <div className="overflow-x-auto">
+            <table className="w-full text-left">
+                <thead>
+                    <tr className="bg-gray-600 border-b">
+                        <th className="p-4 font-semibold">Ingredient</th>
+                        <th className="p-4 font-semibold">Supplier</th>
+                        <th className="p-4 font-semibold">Quantity on Hand</th>
+                        <th className="p-4 font-semibold">Low-Stock Threshold</th>
+                        <th className="p-4 font-semibold">Cost per Unit</th>
+                        <th className="p-4 font-semibold">Expiry Date</th>
+                        <th className="p-4 font-semibold">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {mockIngredients.map(item => (
+                        <tr key={item.id} className="border-b hover:bg-gray-50">
+                            <td className="p-4">
+                                <span className="font-medium">{item.name}</span>
+                                <p className="text-xs text-gray-500 font-mono">{item.sku}</p>
+                            </td>
+                            <td className="p-4">{item.supplier}</td>
+                            <td className="p-4 font-medium">{item.quantity}</td>
+                            <td className="p-4 text-sm text-gray-600">{item.threshold}</td>
+                            <td className="p-4">{item.cost}</td>
+                            <td className="p-4">{item.expiry}</td>
+                            <td className="p-4">
+                                <button className="text-gray-500 hover:text-gray-800"><MoreVertical size={20} /></button>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    </Card>
+);
+
+const InventoryView = () => (
+    <div className="space-y-6">
+        <ProductManagement />
+        <IngredientManagement />
+    </div>
+);
+
 // --- ORDER MANAGEMENT COMPONENTS ---
 const getOrderStatusChipClass = (status) => {
     switch (status) {
-        case 'Delivered': return 'bg-green-100 text-green-800';
-        case 'Processing': return 'bg-blue-100 text-blue-800';
-        case 'Shipped': return 'bg-yellow-100 text-yellow-800';
+        case 'Completed': return 'bg-green-100 text-green-800';
+        case 'In Production': return 'bg-purple-100 text-purple-800';
+        case 'Ready for Pickup': return 'bg-blue-100 text-blue-800';
         case 'Cancelled': return 'bg-red-100 text-red-800';
+        default: return 'bg-gray-100 text-gray-800';
+    }
+};
+
+const getPaymentStatusChipClass = (status) => {
+    switch (status) {
+        case 'Paid': return 'bg-green-100 text-green-800';
+        case 'Unpaid': return 'bg-red-100 text-red-800';
         default: return 'bg-gray-100 text-gray-800';
     }
 };
@@ -154,7 +318,7 @@ const getOrderStatusChipClass = (status) => {
 const OrderManagement = () => (
     <Card>
         <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-amber-800">Recent Orders</h2>
+            <h2 className="text-2xl font-bold text-amber-800">Order Management</h2>
              <button className="bg-amber-500 text-white font-semibold py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-amber-600 transition-colors">
                 <PlusCircle size={20} />
                 Create Order
@@ -162,14 +326,17 @@ const OrderManagement = () => (
         </div>
         <div className="overflow-x-auto">
             <table className="w-full text-left">
-                <thead>
+            <thead>
                     <tr className="bg-gray-50 border-b">
-                        <th className="p-4 font-semibold">Order ID</th>
-                        <th className="p-4 font-semibold">Customer</th>
-                        <th className="p-4 font-semibold">Date</th>
-                        <th className="p-4 font-semibold">Total</th>
-                        <th className="p-4 font-semibold">Status</th>
-                        <th className="p-4 font-semibold">Actions</th>
+                        {/* FIX: Added 'text-gray-600' to make the header text visible */}
+                        <th className="p-4 font-semibold text-gray-600">Order ID</th>
+                        <th className="p-4 font-semibold text-gray-600">Customer</th>
+                        <th className="p-4 font-semibold text-gray-600">Date</th>
+                        <th className="p-4 font-semibold text-gray-600">Type</th>
+                        <th className="p-4 font-semibold text-gray-600">Total</th>
+                        <th className="p-4 font-semibold text-gray-600">Payment</th>
+                        <th className="p-4 font-semibold text-gray-600">Order Status</th>
+                        <th className="p-4 font-semibold text-gray-600">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -178,7 +345,16 @@ const OrderManagement = () => (
                             <td className="p-4 font-mono text-sm text-gray-600">{order.id}</td>
                             <td className="p-4 font-medium">{order.customer}</td>
                             <td className="p-4">{order.date}</td>
+                            <td className="p-4">{order.type}</td>
                             <td className="p-4">{order.total}</td>
+                             <td className="p-4">
+                                 <div className="flex flex-col">
+                                    <span className={`px-2 py-1 text-xs font-semibold rounded-full w-min ${getPaymentStatusChipClass(order.paymentStatus)}`}>
+                                        {order.paymentStatus}
+                                    </span>
+                                     <span className="text-xs text-gray-500 mt-1">{order.paymentMethod}</span>
+                                 </div>
+                            </td>
                             <td className="p-4">
                                 <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getOrderStatusChipClass(order.status)}`}>
                                     {order.status}
@@ -209,11 +385,13 @@ const CustomerManagement = () => (
         <div className="overflow-x-auto">
             <table className="w-full text-left">
                 <thead>
-                    <tr className="bg-gray-50 border-b">
+                    <tr className="bg-gray-600 border-b">
                         <th className="p-4 font-semibold">Customer ID</th>
                         <th className="p-4 font-semibold">Name</th>
                         <th className="p-4 font-semibold">Email</th>
                         <th className="p-4 font-semibold">Total Spent</th>
+                        <th className="p-4 font-semibold">Loyalty Points</th>
+                        <th className="p-4 font-semibold">Notes</th>
                         <th className="p-4 font-semibold">Actions</th>
                     </tr>
                 </thead>
@@ -224,6 +402,8 @@ const CustomerManagement = () => (
                             <td className="p-4 font-medium">{customer.name}</td>
                             <td className="p-4">{customer.email}</td>
                             <td className="p-4">{customer.spent}</td>
+                            <td className="p-4">{customer.loyaltyPoints}</td>
+                            <td className="p-4 text-sm text-gray-600">{customer.notes}</td>
                             <td className="p-4">
                                 <button className="text-gray-500 hover:text-gray-800"><MoreVertical size={20} /></button>
                             </td>
@@ -235,35 +415,149 @@ const CustomerManagement = () => (
     </Card>
 );
 
+// --- PRODUCTION MANAGEMENT COMPONENTS ---
+const ProductionManagement = () => (
+    <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        {/* Daily Bake Sheet with a new, calming teal color scheme */}
+        <div className="lg:col-span-3">
+            <Card>
+                <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-2xl font-bold text-teal-800">Daily Bake Sheet</h2>
+                    <button className="bg-teal-500 text-white font-semibold py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-teal-600 transition-colors">
+                        <PlusCircle size={20} />
+                        Plan New Bake
+                    </button>
+                </div>
+                <table className="w-full text-left">
+                    <thead>
+                        <tr className="bg-gray-600 border-b">
+                            <th className="p-4 font-semibold">Product</th>
+                            <th className="p-4 font-semibold">Target Qty</th>
+                            <th className="p-4 font-semibold">Actual Qty</th>
+                            <th className="p-4 font-semibold">Baker</th>
+                            <th className="p-4 font-semibold">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {mockBakeSheet.map(item => (
+                            <tr key={item.product} className="border-b hover:bg-gray-50">
+                                <td className="p-4 font-medium">{item.product}</td>
+                                <td className="p-4">{item.target}</td>
+                                <td className="p-4">{item.actual}</td>
+                                <td className="p-4">{item.baker}</td>
+                                <td className="p-4">
+                                     <span className={`px-2 py-1 text-xs font-semibold rounded-full ${item.status === 'Completed' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                                        {item.status}
+                                    </span>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </Card>
+        </div>
+        {/* Wastage Log with a clear, cautionary orange color scheme */}
+        <div className="lg:col-span-2">
+            <Card>
+                <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-2xl font-bold text-orange-800">Wastage Log</h2>
+                    <button className="bg-orange-500 text-white font-semibold py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-orange-600 transition-colors">
+                        <Trash2 size={20} />
+                        Log Waste
+                    </button>
+                </div>
+                <table className="w-full text-left">
+                     <thead>
+                        <tr className="bg-gray-600 border-b">
+                            <th className="p-4 font-semibold">Item</th>
+                            <th className="p-4 font-semibold">Quantity</th>
+                            <th className="p-4 font-semibold">Reason</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                         {mockWastageLog.map((item, index) => (
+                            <tr key={index} className="border-b hover:bg-gray-600">
+                                <td className="p-4 font-medium">{item.product}</td>
+                                <td className="p-4">{item.quantity}</td>
+                                <td className="p-4 text-sm">{item.reason}</td>
+                            </tr>
+                         ))}
+                    </tbody>
+                </table>
+            </Card>
+        </div>
+    </div>
+);
+
+// --- EMPLOYEE & REPORTING COMPONENTS (PLACEHOLDERS) ---
+
+const EmployeeManagement = () => (
+    <Card>
+        <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-indigo-800">Employee Management</h2>
+             <button className="bg-indigo-500 text-white font-semibold py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-indigo-600 transition-colors">
+                <UserPlus size={20} />
+                Add Employee
+            </button>
+        </div>
+        <div className="overflow-x-auto">
+            <table className="w-full text-left">
+                <thead>
+                    <tr className="bg-gray-600 border-b">
+                        <th className="p-4 font-semibold">Employee ID</th>
+                        <th className="p-4 font-semibold">Name</th>
+                        <th className="p-4 font-semibold">Role</th>
+                        <th className="p-4 font-semibold">Status</th>
+                        <th className="p-4 font-semibold">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {mockEmployees.map(emp => (
+                        <tr key={emp.id} className="border-b hover:bg-gray-50">
+                            <td className="p-4 font-mono text-sm text-gray-600">{emp.id}</td>
+                            <td className="p-4 font-medium">{emp.name}</td>
+                            <td className="p-4">{emp.role}</td>
+                            <td className="p-4">
+                                <span className={`px-2 py-1 text-xs font-semibold rounded-full ${emp.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                                    {emp.status}
+                                </span>
+                            </td>
+                            <td className="p-4">
+                                <button className="text-gray-500 hover:text-gray-800"><MoreVertical size={20} /></button>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    </Card>
+);
+
+const Reporting = () => (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <ChartPlaceholder title="Sales by Product/Category" />
+        <ChartPlaceholder title="Profit & Loss Report" />
+        <ChartPlaceholder title="Wastage Report" />
+        <ChartPlaceholder title="Sales by Order Type" />
+    </div>
+);
+
+
 // --- MAIN LAYOUT COMPONENTS ---
 
 const Sidebar = ({ activeView, setActiveView, isSidebarOpen, setSidebarOpen }) => {
     const navItems = [
         { name: 'Dashboard', icon: Home, color: 'rose' },
-        { name: 'Products', icon: ShoppingBag, color: 'blue' },
         { name: 'Orders', icon: Package, color: 'amber' },
+        { name: 'Inventory', icon: ClipboardList, color: 'green' },
+        { name: 'Production', icon: CookingPot, color: 'purple' },
         { name: 'Customers', icon: Users, color: 'teal' },
+        { name: 'Employees', icon: UserPlus, color: 'indigo' },
+        { name: 'Reports', icon: BarChart2, color: 'gray' },
     ];
 
-    const getActiveClasses = (color) => {
-        switch (color) {
-            case 'rose': return 'bg-rose-500 text-white shadow-md';
-            case 'blue': return 'bg-blue-500 text-white shadow-md';
-            case 'amber': return 'bg-amber-500 text-white shadow-md';
-            case 'teal': return 'bg-teal-500 text-white shadow-md';
-            default: return 'bg-gray-500 text-white shadow-md';
-        }
-    };
-    
-    const getHoverClasses = (color) => {
-         switch (color) {
-            case 'rose': return 'hover:bg-rose-50';
-            case 'blue': return 'hover:bg-blue-50';
-            case 'amber': return 'hover:bg-amber-50';
-            case 'teal': return 'hover:bg-teal-50';
-            default: return 'hover:bg-gray-50';
-        }
-    }
+    const getActiveClasses = (color) => `bg-${color}-500 text-white shadow-md`;
+    const getHoverClasses = (color) => `hover:bg-${color}-50`;
 
     return (
         <aside className={`fixed lg:relative z-20 h-full bg-white shadow-lg lg:shadow-none transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}>
@@ -309,7 +603,7 @@ const Header = ({ setSidebarOpen }) => {
                 <div className="relative w-full max-w-xs hidden sm:block">
                     <input
                         type="text"
-                        placeholder="Search..."
+                        placeholder="Search orders, products, customers..."
                         className="w-full bg-gray-100 border border-gray-200 rounded-lg py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-rose-400"
                     />
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -343,16 +637,14 @@ const AdminPanel = () => {
 
     const renderContent = () => {
         switch (activeView) {
-            case 'Dashboard':
-                return <Dashboard />;
-            case 'Products':
-                return <ProductManagement />;
-            case 'Orders':
-                return <OrderManagement />;
-            case 'Customers':
-                return <CustomerManagement />;
-            default:
-                return <Dashboard />;
+            case 'Dashboard': return <Dashboard />;
+            case 'Orders': return <OrderManagement />;
+            case 'Inventory': return <InventoryView />;
+            case 'Production': return <ProductionManagement />;
+            case 'Customers': return <CustomerManagement />;
+            case 'Employees': return <EmployeeManagement />;
+            case 'Reports': return <Reporting />;
+            default: return <Dashboard />;
         }
     };
 
@@ -373,4 +665,3 @@ const AdminPanel = () => {
 };
 
 export default AdminPanel;
-

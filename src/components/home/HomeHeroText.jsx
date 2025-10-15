@@ -4,8 +4,10 @@ import React, { useRef } from 'react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Link } from 'react-router-dom'; // Import Link for navigation
 import Navbar from './Navbar';
-import ExploreButton from './ExploreButton'; // Import the new component
+import ExploreButton from './ExploreButton';
+
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -19,6 +21,7 @@ const HomeHeroText = () => {
     const container = useRef(null);
 
     // [All your existing GSAP animations and handlers]
+    // Note: You can add a new GSAP animation for '.anim-bakes-button' if you want it to animate in.
 
     return (
         <div ref={container} className='font-["font1"] relative min-h-screen w-full flex flex-col justify-center items-center text-amber-50 overflow-hidden' style={{ textShadow: '2px 2px 8px rgba(0, 0, 0, 0.5)' }}>
@@ -45,10 +48,18 @@ const HomeHeroText = () => {
                     </p>
                 </div>
                 
-                {/* Replaced the old button with the new component */}
+                {/* Your existing Explore button */}
                 <div className="anim-order-button mt-12 flex justify-center parallax-layer">
                     <ExploreButton />
                 </div>
+                
+                {/* --- NEW BUTTON ADDED BELOW --- */}
+                <div className="anim-bakes-button mt-6 flex justify-center parallax-layer">
+                    <Link to="/our-bakes" className="font-['font2'] text-lg bg-transparent border border-amber-100/50 text-amber-50 py-3 px-8 rounded-full hover:bg-amber-50 hover:text-stone-900 transition-all duration-300 ease-in-out">
+                        Our Bakes
+                    </Link>
+                </div>
+                {/* --- END OF NEW BUTTON --- */}
 
                 <div className='anim-bottom-text mt-16 font-["font2"] text-center parallax-layer'>
                     <p className="text-lg md:text-xl tracking-wider px-4">
