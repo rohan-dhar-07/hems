@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { 
-    Search, Bell, ChevronDown, Home, ShoppingBag, Package, Users, BarChart2, PlusCircle, MoreVertical, 
+import {
+    Search, Bell, ChevronDown, Home, ShoppingBag, Package, Users, BarChart2, PlusCircle, MoreVertical,
     ClipboardList, Trash2, CookingPot, UserPlus, TrendingUp, DollarSign, AlertCircle, Clock, CheckCircle, XCircle, RefreshCw, Sprout
 } from 'lucide-react';
 
@@ -107,6 +107,48 @@ const ChartPlaceholder = ({ title }) => (
     </Card>
 );
 
+// --- NEW DATE FILTER COMPONENT ---
+const DateRangeFilter = ({ onFilter }) => {
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+
+    const handleFilterClick = () => {
+        onFilter({ startDate, endDate });
+    };
+
+    return (
+        <div className="bg-gray-100 p-3 rounded-lg border my-4 flex flex-wrap items-center gap-4">
+            <div className="flex items-center gap-2">
+                <label htmlFor="startDate" className="text-sm font-medium text-gray-700">From:</label>
+                <input
+                    type="date"
+                    id="startDate"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    className="border-gray-300 rounded-md shadow-sm text-sm p-2"
+                />
+            </div>
+            <div className="flex items-center gap-2">
+                <label htmlFor="endDate" className="text-sm font-medium text-gray-700">To:</label>
+                <input
+                    type="date"
+                    id="endDate"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    className="border-gray-300 rounded-md shadow-sm text-sm p-2"
+                />
+            </div>
+            <button
+                onClick={handleFilterClick}
+                className="bg-rose-500 text-white font-semibold py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-rose-600 transition-colors text-sm"
+            >
+                Apply Filter
+            </button>
+        </div>
+    );
+};
+
+
 // --- DASHBOARD COMPONENTS ---
 
 const StatCard = ({ title, value, change, icon }) => (
@@ -124,61 +166,71 @@ const StatCard = ({ title, value, change, icon }) => (
     </Card>
 );
 
-const Dashboard = () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* Main Stats */}
-        <StatCard title="Today's Sales Revenue" value={mockTodaysStats.salesRevenue.value} change={mockTodaysStats.salesRevenue.change} icon={<DollarSign className="w-6 h-6 text-gray-400" />} />
-        <StatCard title="Total Orders Today" value={mockTodaysStats.totalOrders.value} change={mockTodaysStats.totalOrders.change} icon={<Package className="w-6 h-6 text-gray-400" />} />
-        <StatCard title="Average Order Value" value={mockTodaysStats.averageOrderValue.value} change={mockTodaysStats.averageOrderValue.change} icon={<TrendingUp className="w-6 h-6 text-gray-400" />} />
-        <StatCard title="Wastage Count (Today)" value={mockTodaysStats.wastageCount.value} change={mockTodaysStats.wastageCount.change} icon={<Trash2 className="w-6 h-6 text-gray-400" />} />
+const Dashboard = () => {
+    const handleDateFilter = (dates) => {
+        console.log("Filtering Dashboard data for:", dates);
+        // TODO: Add logic here to refetch or filter dashboard stats based on the date range.
+    };
 
-        {/* Actionable Insights */}
-        <Card className="lg:col-span-2">
-            <h4 className="font-bold text-lg text-gray-700">🚨 Low Stock Alerts</h4>
-            <ul className="mt-4 space-y-3">
-                {mockLowStockAlerts.map(item => (
-                    <li key={item.name} className="flex justify-between items-center text-sm p-2 rounded-md bg-yellow-50">
-                        <span className="font-semibold text-yellow-800">{item.name}</span>
-                        <span className="text-yellow-600">
-                            {item.current} <span className="text-gray-400">/ {item.threshold}</span>
-                        </span>
-                    </li>
-                ))}
-            </ul>
-        </Card>
+    return (
+        <>
+            <DateRangeFilter onFilter={handleDateFilter} />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {/* Main Stats */}
+                <StatCard title="Today's Sales Revenue" value={mockTodaysStats.salesRevenue.value} change={mockTodaysStats.salesRevenue.change} icon={<DollarSign className="w-6 h-6 text-gray-400" />} />
+                <StatCard title="Total Orders Today" value={mockTodaysStats.totalOrders.value} change={mockTodaysStats.totalOrders.change} icon={<Package className="w-6 h-6 text-gray-400" />} />
+                <StatCard title="Average Order Value" value={mockTodaysStats.averageOrderValue.value} change={mockTodaysStats.averageOrderValue.change} icon={<TrendingUp className="w-6 h-6 text-gray-400" />} />
+                <StatCard title="Wastage Count (Today)" value={mockTodaysStats.wastageCount.value} change={mockTodaysStats.wastageCount.change} icon={<Trash2 className="w-6 h-6 text-gray-400" />} />
 
-        <Card className="lg:col-span-2">
-            <h4 className="font-bold text-lg text-gray-700">🎂 Upcoming Custom Orders</h4>
-             <ul className="mt-4 space-y-3">
-                {mockUpcomingOrders.map(order => (
-                    <li key={order.id} className="flex justify-between items-center text-sm p-2 rounded-md bg-blue-50">
-                        <div>
-                             <span className="font-semibold text-blue-800">{order.item}</span>
-                             <p className="text-xs text-blue-600">{order.customer} ({order.id})</p>
-                        </div>
-                        <span className="font-medium text-blue-700">{order.due}</span>
-                    </li>
-                ))}
-            </ul>
-        </Card>
+                {/* Actionable Insights */}
+                <Card className="lg:col-span-2">
+                    <h4 className="font-bold text-lg text-gray-700">🚨 Low Stock Alerts</h4>
+                    <ul className="mt-4 space-y-3">
+                        {mockLowStockAlerts.map(item => (
+                            <li key={item.name} className="flex justify-between items-center text-sm p-2 rounded-md bg-yellow-50">
+                                <span className="font-semibold text-yellow-800">{item.name}</span>
+                                <span className="text-yellow-600">
+                                    {item.current} <span className="text-gray-400">/ {item.threshold}</span>
+                                </span>
+                            </li>
+                        ))}
+                    </ul>
+                </Card>
 
-        {/* Chart Placeholders */}
-        <div className="lg:col-span-3">
-            <ChartPlaceholder title="Revenue Over Time" />
-        </div>
-        <Card className="lg:col-span-1">
-             <h4 className="font-bold text-lg text-gray-700">⭐ Top Selling Products (Today)</h4>
-             <ul className="mt-4 space-y-4">
-                {mockTopSellers.map(item => (
-                    <li key={item.name} className="flex justify-between items-center text-sm">
-                        <span className="font-medium text-gray-700">{item.name}</span>
-                        <span className="font-bold text-gray-800 bg-gray-100 px-2 py-1 rounded">{item.sold} sold</span>
-                    </li>
-                ))}
-             </ul>
-        </Card>
-    </div>
-);
+                <Card className="lg:col-span-2">
+                    <h4 className="font-bold text-lg text-gray-700">🎂 Upcoming Custom Orders</h4>
+                     <ul className="mt-4 space-y-3">
+                        {mockUpcomingOrders.map(order => (
+                            <li key={order.id} className="flex justify-between items-center text-sm p-2 rounded-md bg-blue-50">
+                                <div>
+                                     <span className="font-semibold text-blue-800">{order.item}</span>
+                                     <p className="text-xs text-blue-600">{order.customer} ({order.id})</p>
+                                </div>
+                                <span className="font-medium text-blue-700">{order.due}</span>
+                            </li>
+                        ))}
+                    </ul>
+                </Card>
+
+                {/* Chart Placeholders */}
+                <div className="lg:col-span-3">
+                    <ChartPlaceholder title="Revenue Over Time" />
+                </div>
+                <Card className="lg:col-span-1">
+                     <h4 className="font-bold text-lg text-gray-700">⭐ Top Selling Products (Today)</h4>
+                     <ul className="mt-4 space-y-4">
+                        {mockTopSellers.map(item => (
+                            <li key={item.name} className="flex justify-between items-center text-sm">
+                                <span className="font-medium text-gray-700">{item.name}</span>
+                                <span className="font-bold text-gray-800 bg-gray-100 px-2 py-1 rounded">{item.sold} sold</span>
+                            </li>
+                        ))}
+                     </ul>
+                </Card>
+            </div>
+        </>
+    );
+};
 
 
 // --- PRODUCT & INVENTORY COMPONENTS ---
@@ -192,103 +244,118 @@ const getStatusChipClass = (status) => {
     }
 };
 
-const ProductManagement = () => (
-    <Card>
-        <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-blue-800">Finished Products</h2>
-            <button className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-blue-600 transition-colors">
-                <PlusCircle size={20} />
-                Add Product
-            </button>
-        </div>
-        <div className="overflow-x-auto">
-            <table className="w-full text-left">
-                <thead>
-                    <tr className="bg-gray-600 border-b">
-                        <th className="p-4 font-semibold">Product</th>
-                        <th className="p-4 font-semibold">Category</th>
-                        <th className="p-4 font-semibold">Stock</th>
-                        <th className="p-4 font-semibold">Selling Price</th>
-                        <th className="p-4 font-semibold">Production Cost</th>
-                        <th className="p-4 font-semibold">Expiry Date</th>
-                        <th className="p-4 font-semibold">Status</th>
-                        <th className="p-4 font-semibold">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {mockProducts.map(product => (
-                        <tr key={product.id} className="border-b hover:bg-gray-50">
-                            <td className="p-4 flex items-center gap-4">
-                                <img src={product.image} alt={product.name} className="w-12 h-12 rounded-md object-cover" />
-                                <div>
-                                    <span className="font-medium">{product.name}</span>
-                                    <p className="text-xs text-gray-500 font-mono">{product.sku}</p>
-                                </div>
-                            </td>
-                            <td className="p-4">{product.category}</td>
-                            <td className="p-4">{product.stock}</td>
-                            <td className="p-4">{product.price}</td>
-                            <td className="p-4">{product.cost}</td>
-                            <td className="p-4">
-                                <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusChipClass(product.status)}`}>
-                                    {product.status}
-                                </span>
-                            </td>
-                            <td className="p-4">
-                                <button className="text-gray-500 hover:text-gray-800"><MoreVertical size={20} /></button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
-    </Card>
-);
+const ProductManagement = () => {
+    const handleDateFilter = (dates) => {
+        console.log("Filtering Products for:", dates);
+        // TODO: Filter products by date added, last sold date, etc.
+    };
 
-const IngredientManagement = () => (
-    <Card>
-        <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-green-800">Raw Materials / Ingredients</h2>
-            <button className="bg-green-500 text-white font-semibold py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-green-600 transition-colors">
-                <PlusCircle size={20} />
-                Add Ingredient
-            </button>
-        </div>
-        <div className="overflow-x-auto">
-            <table className="w-full text-left">
-                <thead>
-                    <tr className="bg-gray-600 border-b">
-                        <th className="p-4 font-semibold">Ingredient</th>
-                        <th className="p-4 font-semibold">Supplier</th>
-                        <th className="p-4 font-semibold">Quantity on Hand</th>
-                        <th className="p-4 font-semibold">Low-Stock Threshold</th>
-                        <th className="p-4 font-semibold">Cost per Unit</th>
-                        <th className="p-4 font-semibold">Expiry Date</th>
-                        <th className="p-4 font-semibold">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {mockIngredients.map(item => (
-                        <tr key={item.id} className="border-b hover:bg-gray-50">
-                            <td className="p-4">
-                                <span className="font-medium">{item.name}</span>
-                                <p className="text-xs text-gray-500 font-mono">{item.sku}</p>
-                            </td>
-                            <td className="p-4">{item.supplier}</td>
-                            <td className="p-4 font-medium">{item.quantity}</td>
-                            <td className="p-4 text-sm text-gray-600">{item.threshold}</td>
-                            <td className="p-4">{item.cost}</td>
-                            <td className="p-4">{item.expiry}</td>
-                            <td className="p-4">
-                                <button className="text-gray-500 hover:text-gray-800"><MoreVertical size={20} /></button>
-                            </td>
+    return (
+        <Card>
+            <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-blue-800">Finished Products</h2>
+                <button className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-blue-600 transition-colors">
+                    <PlusCircle size={20} />
+                    Add Product
+                </button>
+            </div>
+            <DateRangeFilter onFilter={handleDateFilter} />
+            <div className="overflow-x-auto">
+                <table className="w-full text-left">
+                    <thead>
+                        <tr className="bg-gray-100 border-b">
+                            <th className="p-4 font-semibold text-gray-600">Product</th>
+                            <th className="p-4 font-semibold text-gray-600">Category</th>
+                            <th className="p-4 font-semibold text-gray-600">Stock</th>
+                            <th className="p-4 font-semibold text-gray-600">Selling Price</th>
+                            <th className="p-4 font-semibold text-gray-600">Production Cost</th>
+                            <th className="p-4 font-semibold text-gray-600">Status</th>
+                            <th className="p-4 font-semibold text-gray-600">Actions</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
-    </Card>
-);
+                    </thead>
+                    <tbody>
+                        {mockProducts.map(product => (
+                            <tr key={product.id} className="border-b hover:bg-gray-50">
+                                <td className="p-4 flex items-center gap-4">
+                                    <img src={product.image} alt={product.name} className="w-12 h-12 rounded-md object-cover" />
+                                    <div>
+                                        <span className="font-medium">{product.name}</span>
+                                        <p className="text-xs text-gray-500 font-mono">{product.sku}</p>
+                                    </div>
+                                </td>
+                                <td className="p-4">{product.category}</td>
+                                <td className="p-4">{product.stock}</td>
+                                <td className="p-4">{product.price}</td>
+                                <td className="p-4">{product.cost}</td>
+                                <td className="p-4">
+                                    <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusChipClass(product.status)}`}>
+                                        {product.status}
+                                    </span>
+                                </td>
+                                <td className="p-4">
+                                    <button className="text-gray-500 hover:text-gray-800"><MoreVertical size={20} /></button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        </Card>
+    );
+};
+
+const IngredientManagement = () => {
+    const handleDateFilter = (dates) => {
+        console.log("Filtering Ingredients for:", dates);
+        // TODO: Filter ingredients by expiry date, last restock date, etc.
+    };
+
+    return (
+        <Card>
+            <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-green-800">Raw Materials / Ingredients</h2>
+                <button className="bg-green-500 text-white font-semibold py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-green-600 transition-colors">
+                    <PlusCircle size={20} />
+                    Add Ingredient
+                </button>
+            </div>
+            <DateRangeFilter onFilter={handleDateFilter} />
+            <div className="overflow-x-auto">
+                <table className="w-full text-left">
+                    <thead>
+                        <tr className="bg-gray-100 border-b">
+                            <th className="p-4 font-semibold text-gray-600">Ingredient</th>
+                            <th className="p-4 font-semibold text-gray-600">Supplier</th>
+                            <th className="p-4 font-semibold text-gray-600">Quantity on Hand</th>
+                            <th className="p-4 font-semibold text-gray-600">Low-Stock Threshold</th>
+                            <th className="p-4 font-semibold text-gray-600">Cost per Unit</th>
+                            <th className="p-4 font-semibold text-gray-600">Expiry Date</th>
+                            <th className="p-4 font-semibold text-gray-600">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {mockIngredients.map(item => (
+                            <tr key={item.id} className="border-b hover:bg-gray-50">
+                                <td className="p-4">
+                                    <span className="font-medium">{item.name}</span>
+                                    <p className="text-xs text-gray-500 font-mono">{item.sku}</p>
+                                </td>
+                                <td className="p-4">{item.supplier}</td>
+                                <td className="p-4 font-medium">{item.quantity}</td>
+                                <td className="p-4 text-sm text-gray-600">{item.threshold}</td>
+                                <td className="p-4">{item.cost}</td>
+                                <td className="p-4">{item.expiry}</td>
+                                <td className="p-4">
+                                    <button className="text-gray-500 hover:text-gray-800"><MoreVertical size={20} /></button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        </Card>
+    );
+};
 
 const InventoryView = () => (
     <div className="space-y-6">
@@ -316,232 +383,279 @@ const getPaymentStatusChipClass = (status) => {
     }
 };
 
-const OrderManagement = () => (
-    <Card>
-        <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-amber-800">Order Management</h2>
-             <button className="bg-amber-500 text-white font-semibold py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-amber-600 transition-colors">
-                <PlusCircle size={20} />
-                Create Order
-            </button>
-        </div>
-        <div className="overflow-x-auto">
-            <table className="w-full text-left">
-            <thead>
-                    <tr className="bg-gray-50 border-b">
-                        {/* FIX: Added 'text-gray-600' to make the header text visible */}
-                        <th className="p-4 font-semibold text-gray-600">Order ID</th>
-                        <th className="p-4 font-semibold text-gray-600">Customer</th>
-                        <th className="p-4 font-semibold text-gray-600">Date</th>
-                        <th className="p-4 font-semibold text-gray-600">Type</th>
-                        <th className="p-4 font-semibold text-gray-600">Total</th>
-                        <th className="p-4 font-semibold text-gray-600">Payment</th>
-                        <th className="p-4 font-semibold text-gray-600">Order Status</th>
-                        <th className="p-4 font-semibold text-gray-600">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {mockOrders.map(order => (
-                        <tr key={order.id} className="border-b hover:bg-gray-50">
-                            <td className="p-4 font-mono text-sm text-gray-600">{order.id}</td>
-                            <td className="p-4 font-medium">{order.customer}</td>
-                            <td className="p-4">{order.date}</td>
-                            <td className="p-4">{order.type}</td>
-                            <td className="p-4">{order.total}</td>
-                             <td className="p-4">
-                                 <div className="flex flex-col">
-                                    <span className={`px-2 py-1 text-xs font-semibold rounded-full w-min ${getPaymentStatusChipClass(order.paymentStatus)}`}>
-                                        {order.paymentStatus}
-                                    </span>
-                                     <span className="text-xs text-gray-500 mt-1">{order.paymentMethod}</span>
-                                 </div>
-                            </td>
-                            <td className="p-4">
-                                <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getOrderStatusChipClass(order.status)}`}>
-                                    {order.status}
-                                </span>
-                            </td>
-                            <td className="p-4">
-                                <button className="text-gray-500 hover:text-gray-800"><MoreVertical size={20} /></button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
-    </Card>
-);
+const OrderManagement = () => {
+    const handleDateFilter = (dates) => {
+        console.log("Filtering Orders for:", dates);
+        // TODO: Add logic here to filter the 'mockOrders' array based on the selected date range.
+    };
 
-
-// --- CUSTOMER MANAGEMENT COMPONENTS ---
-const CustomerManagement = () => (
-    <Card>
-         <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-teal-800">Customers</h2>
-             <button className="bg-teal-500 text-white font-semibold py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-teal-600 transition-colors">
-                <PlusCircle size={20} />
-                Add Customer
-            </button>
-        </div>
-        <div className="overflow-x-auto">
-            <table className="w-full text-left">
-                <thead>
-                    <tr className="bg-gray-600 border-b">
-                        <th className="p-4 font-semibold">Customer ID</th>
-                        <th className="p-4 font-semibold">Name</th>
-                        <th className="p-4 font-semibold">Email</th>
-                        <th className="p-4 font-semibold">Total Spent</th>
-                        <th className="p-4 font-semibold">Loyalty Points</th>
-                        <th className="p-4 font-semibold">Notes</th>
-                        <th className="p-4 font-semibold">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {mockCustomers.map(customer => (
-                        <tr key={customer.id} className="border-b hover:bg-gray-50">
-                            <td className="p-4 font-mono text-sm text-gray-600">{customer.id}</td>
-                            <td className="p-4 font-medium">{customer.name}</td>
-                            <td className="p-4">{customer.email}</td>
-                            <td className="p-4">{customer.spent}</td>
-                            <td className="p-4">{customer.loyaltyPoints}</td>
-                            <td className="p-4 text-sm text-gray-600">{customer.notes}</td>
-                            <td className="p-4">
-                                <button className="text-gray-500 hover:text-gray-800"><MoreVertical size={20} /></button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
-    </Card>
-);
-
-// --- PRODUCTION MANAGEMENT COMPONENTS ---
-const ProductionManagement = () => (
-    <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-        {/* Daily Bake Sheet with a new, calming teal color scheme */}
-        <div className="lg:col-span-3">
-            <Card>
-                <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl font-bold text-teal-800">Daily Bake Sheet</h2>
-                    <button className="bg-teal-500 text-white font-semibold py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-teal-600 transition-colors">
-                        <PlusCircle size={20} />
-                        Plan New Bake
-                    </button>
-                </div>
+    return (
+        <Card>
+            <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-amber-800">Order Management</h2>
+                 <button className="bg-amber-500 text-white font-semibold py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-amber-600 transition-colors">
+                    <PlusCircle size={20} />
+                    Create Order
+                </button>
+            </div>
+            <DateRangeFilter onFilter={handleDateFilter} />
+            <div className="overflow-x-auto">
                 <table className="w-full text-left">
-                    <thead>
-                        <tr className="bg-gray-600 border-b">
-                            <th className="p-4 font-semibold">Product</th>
-                            <th className="p-4 font-semibold">Target Qty</th>
-                            <th className="p-4 font-semibold">Actual Qty</th>
-                            <th className="p-4 font-semibold">Baker</th>
-                            <th className="p-4 font-semibold">Status</th>
+                <thead>
+                        <tr className="bg-gray-50 border-b">
+                            <th className="p-4 font-semibold text-gray-600">Order ID</th>
+                            <th className="p-4 font-semibold text-gray-600">Customer</th>
+                            <th className="p-4 font-semibold text-gray-600">Date</th>
+                            <th className="p-4 font-semibold text-gray-600">Type</th>
+                            <th className="p-4 font-semibold text-gray-600">Total</th>
+                            <th className="p-4 font-semibold text-gray-600">Payment</th>
+                            <th className="p-4 font-semibold text-gray-600">Order Status</th>
+                            <th className="p-4 font-semibold text-gray-600">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {mockBakeSheet.map(item => (
-                            <tr key={item.product} className="border-b hover:bg-gray-50">
-                                <td className="p-4 font-medium">{item.product}</td>
-                                <td className="p-4">{item.target}</td>
-                                <td className="p-4">{item.actual}</td>
-                                <td className="p-4">{item.baker}</td>
+                        {mockOrders.map(order => (
+                            <tr key={order.id} className="border-b hover:bg-gray-50">
+                                <td className="p-4 font-mono text-sm text-gray-600">{order.id}</td>
+                                <td className="p-4 font-medium">{order.customer}</td>
+                                <td className="p-4">{order.date}</td>
+                                <td className="p-4">{order.type}</td>
+                                <td className="p-4">{order.total}</td>
+                                 <td className="p-4">
+                                     <div className="flex flex-col">
+                                        <span className={`px-2 py-1 text-xs font-semibold rounded-full w-min ${getPaymentStatusChipClass(order.paymentStatus)}`}>
+                                            {order.paymentStatus}
+                                        </span>
+                                         <span className="text-xs text-gray-500 mt-1">{order.paymentMethod}</span>
+                                     </div>
+                                </td>
                                 <td className="p-4">
-                                     <span className={`px-2 py-1 text-xs font-semibold rounded-full ${item.status === 'Completed' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
-                                        {item.status}
+                                    <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getOrderStatusChipClass(order.status)}`}>
+                                        {order.status}
                                     </span>
+                                </td>
+                                <td className="p-4">
+                                    <button className="text-gray-500 hover:text-gray-800"><MoreVertical size={20} /></button>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
-            </Card>
-        </div>
-        {/* Wastage Log with a clear, cautionary orange color scheme */}
-        <div className="lg:col-span-2">
-            <Card>
-                <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl font-bold text-orange-800">Wastage Log</h2>
-                    <button className="bg-orange-500 text-white font-semibold py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-orange-600 transition-colors">
-                        <Trash2 size={20} />
-                        Log Waste
-                    </button>
-                </div>
+            </div>
+        </Card>
+    );
+};
+
+
+// --- CUSTOMER MANAGEMENT COMPONENTS ---
+const CustomerManagement = () => {
+    const handleDateFilter = (dates) => {
+        console.log("Filtering Customers for:", dates);
+        // TODO: Filter customers by signup date or last order date.
+    };
+
+    return (
+        <Card>
+             <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-teal-800">Customers</h2>
+                 <button className="bg-teal-500 text-white font-semibold py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-teal-600 transition-colors">
+                    <PlusCircle size={20} />
+                    Add Customer
+                </button>
+            </div>
+            <DateRangeFilter onFilter={handleDateFilter} />
+            <div className="overflow-x-auto">
                 <table className="w-full text-left">
-                     <thead>
-                        <tr className="bg-gray-600 border-b">
-                            <th className="p-4 font-semibold">Item</th>
-                            <th className="p-4 font-semibold">Quantity</th>
-                            <th className="p-4 font-semibold">Reason</th>
+                    <thead>
+                        <tr className="bg-gray-100 border-b">
+                            <th className="p-4 font-semibold text-gray-600">Customer ID</th>
+                            <th className="p-4 font-semibold text-gray-600">Name</th>
+                            <th className="p-4 font-semibold text-gray-600">Email</th>
+                            <th className="p-4 font-semibold text-gray-600">Total Spent</th>
+                            <th className="p-4 font-semibold text-gray-600">Loyalty Points</th>
+                            <th className="p-4 font-semibold text-gray-600">Notes</th>
+                            <th className="p-4 font-semibold text-gray-600">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                         {mockWastageLog.map((item, index) => (
-                            <tr key={index} className="border-b hover:bg-gray-600">
-                                <td className="p-4 font-medium">{item.product}</td>
-                                <td className="p-4">{item.quantity}</td>
-                                <td className="p-4 text-sm">{item.reason}</td>
+                        {mockCustomers.map(customer => (
+                            <tr key={customer.id} className="border-b hover:bg-gray-50">
+                                <td className="p-4 font-mono text-sm text-gray-600">{customer.id}</td>
+                                <td className="p-4 font-medium">{customer.name}</td>
+                                <td className="p-4">{customer.email}</td>
+                                <td className="p-4">{customer.spent}</td>
+                                <td className="p-4">{customer.loyaltyPoints}</td>
+                                <td className="p-4 text-sm text-gray-600">{customer.notes}</td>
+                                <td className="p-4">
+                                    <button className="text-gray-500 hover:text-gray-800"><MoreVertical size={20} /></button>
+                                </td>
                             </tr>
-                         ))}
+                        ))}
                     </tbody>
                 </table>
-            </Card>
+            </div>
+        </Card>
+    );
+};
+
+// --- PRODUCTION MANAGEMENT COMPONENTS ---
+const ProductionManagement = () => {
+    const handleBakeSheetFilter = (dates) => {
+        console.log("Filtering Bake Sheet for:", dates);
+        // TODO: Filter bake sheet items by date.
+    };
+
+    const handleWastageFilter = (dates) => {
+        console.log("Filtering Wastage Log for:", dates);
+        // TODO: Filter wastage log items by date.
+    };
+
+    return (
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+            {/* Daily Bake Sheet */}
+            <div className="lg:col-span-3">
+                <Card>
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-2xl font-bold text-teal-800">Daily Bake Sheet</h2>
+                        <button className="bg-teal-500 text-white font-semibold py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-teal-600 transition-colors">
+                            <PlusCircle size={20} />
+                            Plan New Bake
+                        </button>
+                    </div>
+                    <DateRangeFilter onFilter={handleBakeSheetFilter} />
+                    <table className="w-full text-left">
+                        <thead>
+                            <tr className="bg-gray-100 border-b">
+                                <th className="p-4 font-semibold text-gray-600">Product</th>
+                                <th className="p-4 font-semibold text-gray-600">Target Qty</th>
+                                <th className="p-4 font-semibold text-gray-600">Actual Qty</th>
+                                <th className="p-4 font-semibold text-gray-600">Baker</th>
+                                <th className="p-4 font-semibold text-gray-600">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {mockBakeSheet.map(item => (
+                                <tr key={item.product} className="border-b hover:bg-gray-50">
+                                    <td className="p-4 font-medium">{item.product}</td>
+                                    <td className="p-4">{item.target}</td>
+                                    <td className="p-4">{item.actual}</td>
+                                    <td className="p-4">{item.baker}</td>
+                                    <td className="p-4">
+                                         <span className={`px-2 py-1 text-xs font-semibold rounded-full ${item.status === 'Completed' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                                            {item.status}
+                                        </span>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </Card>
+            </div>
+            {/* Wastage Log */}
+            <div className="lg:col-span-2">
+                <Card>
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-2xl font-bold text-orange-800">Wastage Log</h2>
+                        <button className="bg-orange-500 text-white font-semibold py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-orange-600 transition-colors">
+                            <Trash2 size={20} />
+                            Log Waste
+                        </button>
+                    </div>
+                    <DateRangeFilter onFilter={handleWastageFilter} />
+                    <table className="w-full text-left">
+                         <thead>
+                            <tr className="bg-gray-100 border-b">
+                                <th className="p-4 font-semibold text-gray-600">Item</th>
+                                <th className="p-4 font-semibold text-gray-600">Quantity</th>
+                                <th className="p-4 font-semibold text-gray-600">Reason</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                             {mockWastageLog.map((item, index) => (
+                                <tr key={index} className="border-b hover:bg-orange-50">
+                                    <td className="p-4 font-medium">{item.product}</td>
+                                    <td className="p-4">{item.quantity}</td>
+                                    <td className="p-4 text-sm">{item.reason}</td>
+                                </tr>
+                             ))}
+                        </tbody>
+                    </table>
+                </Card>
+            </div>
         </div>
-    </div>
-);
+    );
+};
 
 // --- EMPLOYEE & REPORTING COMPONENTS (PLACEHOLDERS) ---
 
-const EmployeeManagement = () => (
-    <Card>
-        <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-indigo-800">Employee Management</h2>
-             <button className="bg-indigo-500 text-white font-semibold py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-indigo-600 transition-colors">
-                <UserPlus size={20} />
-                Add Employee
-            </button>
-        </div>
-        <div className="overflow-x-auto">
-            <table className="w-full text-left">
-                <thead>
-                    <tr className="bg-gray-600 border-b">
-                        <th className="p-4 font-semibold">Employee ID</th>
-                        <th className="p-4 font-semibold">Name</th>
-                        <th className="p-4 font-semibold">Role</th>
-                        <th className="p-4 font-semibold">Status</th>
-                        <th className="p-4 font-semibold">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {mockEmployees.map(emp => (
-                        <tr key={emp.id} className="border-b hover:bg-gray-50">
-                            <td className="p-4 font-mono text-sm text-gray-600">{emp.id}</td>
-                            <td className="p-4 font-medium">{emp.name}</td>
-                            <td className="p-4">{emp.role}</td>
-                            <td className="p-4">
-                                <span className={`px-2 py-1 text-xs font-semibold rounded-full ${emp.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
-                                    {emp.status}
-                                </span>
-                            </td>
-                            <td className="p-4">
-                                <button className="text-gray-500 hover:text-gray-800"><MoreVertical size={20} /></button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
-    </Card>
-);
+const EmployeeManagement = () => {
+    const handleDateFilter = (dates) => {
+        console.log("Filtering Employees for:", dates);
+        // TODO: Filter employees by hire date.
+    };
 
-const Reporting = () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <ChartPlaceholder title="Sales by Product/Category" />
-        <ChartPlaceholder title="Profit & Loss Report" />
-        <ChartPlaceholder title="Wastage Report" />
-        <ChartPlaceholder title="Sales by Order Type" />
-    </div>
-);
+    return (
+        <Card>
+            <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-indigo-800">Employee Management</h2>
+                 <button className="bg-indigo-500 text-white font-semibold py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-indigo-600 transition-colors">
+                    <UserPlus size={20} />
+                    Add Employee
+                </button>
+            </div>
+            <DateRangeFilter onFilter={handleDateFilter} />
+            <div className="overflow-x-auto">
+                <table className="w-full text-left">
+                    <thead>
+                        <tr className="bg-gray-100 border-b">
+                            <th className="p-4 font-semibold text-gray-600">Employee ID</th>
+                            <th className="p-4 font-semibold text-gray-600">Name</th>
+                            <th className="p-4 font-semibold text-gray-600">Role</th>
+                            <th className="p-4 font-semibold text-gray-600">Status</th>
+                            <th className="p-4 font-semibold text-gray-600">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {mockEmployees.map(emp => (
+                            <tr key={emp.id} className="border-b hover:bg-gray-50">
+                                <td className="p-4 font-mono text-sm text-gray-600">{emp.id}</td>
+                                <td className="p-4 font-medium">{emp.name}</td>
+                                <td className="p-4">{emp.role}</td>
+                                <td className="p-4">
+                                    <span className={`px-2 py-1 text-xs font-semibold rounded-full ${emp.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                                        {emp.status}
+                                    </span>
+                                </td>
+                                <td className="p-4">
+                                    <button className="text-gray-500 hover:text-gray-800"><MoreVertical size={20} /></button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        </Card>
+    );
+};
+
+const Reporting = () => {
+    const handleDateFilter = (dates) => {
+        console.log("Generating Reports for date range:", dates);
+        // TODO: Logic to update charts with data from the selected date range.
+    };
+
+    return (
+        <>
+            <DateRangeFilter onFilter={handleDateFilter} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <ChartPlaceholder title="Sales by Product/Category" />
+                <ChartPlaceholder title="Profit & Loss Report" />
+                <ChartPlaceholder title="Wastage Report" />
+                <ChartPlaceholder title="Sales by Order Type" />
+            </div>
+        </>
+    );
+};
 
 
 // --- MAIN LAYOUT COMPONENTS ---
