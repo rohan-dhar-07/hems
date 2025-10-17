@@ -51,7 +51,7 @@ const mockIngredients = [
 ];
 
 const mockProducts = [
-    { id: 1, name: 'Artisan Sourdough', sku: 'BRD-SD-01', category: 'Bread', stock: 25, price: '₹350', cost: '₹120.50', status: 'In Stock', image: 'https://placehold.co/400x400/F5C7A9/FFF?text=Sourdough' },
+    { id: 1, name: 'Artisan S sourdough', sku: 'BRD-SD-01', category: 'Bread', stock: 25, price: '₹350', cost: '₹120.50', status: 'In Stock', image: 'https://placehold.co/400x400/F5C7A9/FFF?text=Sourdough' },
     { id: 2, name: 'Chocolate Croissant', sku: 'PST-CC-01', category: 'Pastry', stock: 150, price: '₹120', cost: '₹45.75', status: 'In Stock', image: 'https://placehold.co/400x400/BF8B67/FFF?text=Croissant' },
     { id: 3, name: 'Red Velvet Cupcake', sku: 'CKE-RV-01', category: 'Cake', stock: 0, price: '₹90', cost: '₹32.00', status: 'Out of Stock', image: 'https://placehold.co/400x400/D9534F/FFF?text=Cupcake' },
     { id: 4, name: 'Custom Wedding Cake', sku: 'CKE-CW-01', category: 'Custom', stock: 5, price: '₹4,500', cost: '₹1850.00', status: 'Low Stock', image: 'https://placehold.co/400x400/EAD5DC/FFF?text=Cake' },
@@ -64,12 +64,6 @@ const mockBakeSheet = [
     { product: 'Artisan Sourdough', target: 50, actual: 50, baker: 'Sunita', status: 'Completed' },
     { product: 'Red Velvet Cupcake', target: 100, actual: 100, baker: 'Ravi', status: 'Completed' },
     { product: 'Baguette', target: 80, actual: 0, baker: 'Sunita', status: 'To-Do' },
-];
-
-const mockWastageLog = [
-    { product: 'Cinnamon Roll', quantity: 3, reason: 'Unsold', loggedBy: 'Manager' },
-    { product: 'Sourdough Loaf', quantity: 1, reason: 'Production Error', loggedBy: 'Sunita' },
-    { product: 'Milk', quantity: '2L', reason: 'Expired', loggedBy: 'Manager' },
 ];
 
 // 5. Customer Data
@@ -86,6 +80,15 @@ const mockEmployees = [
     { id: 'EMP02', name: 'Ravi Kumar', role: 'Baker', status: 'Active' },
     { id: 'EMP03', name: 'Meera Iyer', role: 'Cashier', status: 'On Leave' },
     { id: 'EMP04', name: 'Rajesh Shah', role: 'Manager', status: 'Active' },
+];
+
+// 7. NEW: Consolidated Waste Data
+const mockWasteData = [
+    { id: 'WST001', item: 'Cinnamon Roll', type: 'Finished Product', quantity: 3, unit: 'units', reason: 'Unsold', date: '2025-10-16', loggedBy: 'Manager', estimatedCost: '₹150.00' },
+    { id: 'WST002', item: 'Sourdough Loaf', type: 'Finished Product', quantity: 1, unit: 'unit', reason: 'Production Error', date: '2025-10-16', loggedBy: 'Sunita', estimatedCost: '₹120.50' },
+    { id: 'WST003', item: 'Fresh Cream', type: 'Ingredient', quantity: '2', unit: 'L', reason: 'Expired', date: '2025-10-15', loggedBy: 'Manager', estimatedCost: '₹500.00' },
+    { id: 'WST004', item: 'Red Velvet Cupcake', type: 'Finished Product', quantity: 5, unit: 'units', reason: 'Damaged during transit', date: '2025-10-14', loggedBy: 'Meera Iyer', estimatedCost: '₹160.00' },
+    { id: 'WST005', item: 'All-Purpose Flour', type: 'Ingredient', quantity: '1.5', unit: 'kg', reason: 'Contamination', date: '2025-10-13', loggedBy: 'Ravi Kumar', estimatedCost: '₹75.00' },
 ];
 
 
@@ -498,93 +501,119 @@ const CustomerManagement = () => {
     );
 };
 
-// --- PRODUCTION MANAGEMENT COMPONENTS ---
+// --- PRODUCTION MANAGEMENT COMPONENTS (REVISED) ---
 const ProductionManagement = () => {
     const handleBakeSheetFilter = (dates) => {
         console.log("Filtering Bake Sheet for:", dates);
         // TODO: Filter bake sheet items by date.
     };
 
-    const handleWastageFilter = (dates) => {
-        console.log("Filtering Wastage Log for:", dates);
-        // TODO: Filter wastage log items by date.
+    return (
+        <Card>
+            <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-teal-800">Daily Bake Sheet</h2>
+                <button className="bg-teal-500 text-white font-semibold py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-teal-600 transition-colors">
+                    <PlusCircle size={20} />
+                    Plan New Bake
+                </button>
+            </div>
+            <DateRangeFilter onFilter={handleBakeSheetFilter} />
+            <table className="w-full text-left">
+                <thead>
+                    <tr className="bg-gray-100 border-b">
+                        <th className="p-4 font-semibold text-gray-600">Product</th>
+                        <th className="p-4 font-semibold text-gray-600">Target Qty</th>
+                        <th className="p-4 font-semibold text-gray-600">Actual Qty</th>
+                        <th className="p-4 font-semibold text-gray-600">Baker</th>
+                        <th className="p-4 font-semibold text-gray-600">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {mockBakeSheet.map(item => (
+                        <tr key={item.product} className="border-b hover:bg-gray-50">
+                            <td className="p-4 font-medium">{item.product}</td>
+                            <td className="p-4">{item.target}</td>
+                            <td className="p-4">{item.actual}</td>
+                            <td className="p-4">{item.baker}</td>
+                            <td className="p-4">
+                                    <span className={`px-2 py-1 text-xs font-semibold rounded-full ${item.status === 'Completed' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                                    {item.status}
+                                </span>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </Card>
+    );
+};
+
+
+// --- NEW WASTE MANAGEMENT COMPONENT ---
+const getWasteTypeChipClass = (type) => {
+    switch (type) {
+        case 'Finished Product': return 'bg-orange-100 text-orange-800';
+        case 'Ingredient': return 'bg-blue-100 text-blue-800';
+        default: return 'bg-gray-100 text-gray-800';
+    }
+};
+
+const WasteManagement = () => {
+    const handleDateFilter = (dates) => {
+        console.log("Filtering Waste Log for:", dates);
+        // TODO: Add logic here to filter the 'mockWasteData' array based on the selected date range.
     };
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-            {/* Daily Bake Sheet */}
-            <div className="lg:col-span-3">
-                <Card>
-                    <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-2xl font-bold text-teal-800">Daily Bake Sheet</h2>
-                        <button className="bg-teal-500 text-white font-semibold py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-teal-600 transition-colors">
-                            <PlusCircle size={20} />
-                            Plan New Bake
-                        </button>
-                    </div>
-                    <DateRangeFilter onFilter={handleBakeSheetFilter} />
-                    <table className="w-full text-left">
-                        <thead>
-                            <tr className="bg-gray-100 border-b">
-                                <th className="p-4 font-semibold text-gray-600">Product</th>
-                                <th className="p-4 font-semibold text-gray-600">Target Qty</th>
-                                <th className="p-4 font-semibold text-gray-600">Actual Qty</th>
-                                <th className="p-4 font-semibold text-gray-600">Baker</th>
-                                <th className="p-4 font-semibold text-gray-600">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {mockBakeSheet.map(item => (
-                                <tr key={item.product} className="border-b hover:bg-gray-50">
-                                    <td className="p-4 font-medium">{item.product}</td>
-                                    <td className="p-4">{item.target}</td>
-                                    <td className="p-4">{item.actual}</td>
-                                    <td className="p-4">{item.baker}</td>
-                                    <td className="p-4">
-                                         <span className={`px-2 py-1 text-xs font-semibold rounded-full ${item.status === 'Completed' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
-                                            {item.status}
-                                        </span>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </Card>
+        <Card>
+            <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-red-800">Waste Management & Spoilage</h2>
+                <button className="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-red-600 transition-colors">
+                    <PlusCircle size={20} />
+                    Log New Waste
+                </button>
             </div>
-            {/* Wastage Log */}
-            <div className="lg:col-span-2">
-                <Card>
-                    <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-2xl font-bold text-orange-800">Wastage Log</h2>
-                        <button className="bg-orange-500 text-white font-semibold py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-orange-600 transition-colors">
-                            <Trash2 size={20} />
-                            Log Waste
-                        </button>
-                    </div>
-                    <DateRangeFilter onFilter={handleWastageFilter} />
-                    <table className="w-full text-left">
-                         <thead>
-                            <tr className="bg-gray-100 border-b">
-                                <th className="p-4 font-semibold text-gray-600">Item</th>
-                                <th className="p-4 font-semibold text-gray-600">Quantity</th>
-                                <th className="p-4 font-semibold text-gray-600">Reason</th>
+            <DateRangeFilter onFilter={handleDateFilter} />
+            <div className="overflow-x-auto">
+                <table className="w-full text-left">
+                    <thead>
+                        <tr className="bg-gray-100 border-b">
+                            <th className="p-4 font-semibold text-gray-600">Item</th>
+                            <th className="p-4 font-semibold text-gray-600">Type</th>
+                            <th className="p-4 font-semibold text-gray-600">Quantity</th>
+                            <th className="p-4 font-semibold text-gray-600">Reason</th>
+                            <th className="p-4 font-semibold text-gray-600">Date Logged</th>
+                            <th className="p-4 font-semibold text-gray-600">Estimated Cost</th>
+                            <th className="p-4 font-semibold text-gray-600">Logged By</th>
+                            <th className="p-4 font-semibold text-gray-600">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {mockWasteData.map(waste => (
+                            <tr key={waste.id} className="border-b hover:bg-red-50">
+                                <td className="p-4 font-medium">{waste.item}</td>
+                                <td className="p-4">
+                                    <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getWasteTypeChipClass(waste.type)}`}>
+                                        {waste.type}
+                                    </span>
+                                </td>
+                                <td className="p-4">{waste.quantity} {waste.unit}</td>
+                                <td className="p-4 text-sm text-gray-600">{waste.reason}</td>
+                                <td className="p-4">{waste.date}</td>
+                                <td className="p-4 font-medium text-red-700">{waste.estimatedCost}</td>
+                                <td className="p-4">{waste.loggedBy}</td>
+                                <td className="p-4">
+                                    <button className="text-gray-500 hover:text-gray-800"><MoreVertical size={20} /></button>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                             {mockWastageLog.map((item, index) => (
-                                <tr key={index} className="border-b hover:bg-orange-50">
-                                    <td className="p-4 font-medium">{item.product}</td>
-                                    <td className="p-4">{item.quantity}</td>
-                                    <td className="p-4 text-sm">{item.reason}</td>
-                                </tr>
-                             ))}
-                        </tbody>
-                    </table>
-                </Card>
+                        ))}
+                    </tbody>
+                </table>
             </div>
-        </div>
+        </Card>
     );
 };
+
 
 // --- EMPLOYEE & REPORTING COMPONENTS (PLACEHOLDERS) ---
 
@@ -666,6 +695,7 @@ const Sidebar = ({ activeView, setActiveView, isSidebarOpen, setSidebarOpen }) =
         { name: 'Orders', icon: Package, color: 'amber' },
         { name: 'Inventory', icon: ClipboardList, color: 'green' },
         { name: 'Production', icon: CookingPot, color: 'purple' },
+        { name: 'Waste', icon: Trash2, color: 'red' },
         { name: 'Customers', icon: Users, color: 'teal' },
         { name: 'Employees', icon: UserPlus, color: 'indigo' },
         { name: 'Reports', icon: BarChart2, color: 'gray' },
@@ -756,6 +786,7 @@ const AdminPanel = () => {
             case 'Orders': return <OrderManagement />;
             case 'Inventory': return <InventoryView />;
             case 'Production': return <ProductionManagement />;
+            case 'Waste': return <WasteManagement />;
             case 'Customers': return <CustomerManagement />;
             case 'Employees': return <EmployeeManagement />;
             case 'Reports': return <Reporting />;
